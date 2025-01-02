@@ -1,0 +1,309 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\mstd-lib\DX9\std_dx9.cpp" />
+    <ClCompile Include="..\..\mstd-lib\DX9\std_dx9_pixel_passthrough.cpp" />
+    <ClCompile Include="..\..\mstd-lib\DX9\std_dx9_playstation_dither.cpp" />
+    <ClCompile Include="..\..\mstd-lib\DX9\std_dx9_vert_shader.cpp" />
+    <ClCompile Include="..\..\mstd-lib\std_basic_fstream.cpp" />
+    <ClCompile Include="..\..\mstd-lib\std_crc32.cpp" />
+    <ClCompile Include="..\..\mstd-lib\std_debug.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+      </ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+      </ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\mstd-lib\std_exception.cpp" />
+    <ClCompile Include="..\..\mstd-lib\std_filesystem.cpp" />
+    <ClCompile Include="..\..\mstd-lib\std_image.cpp" />
+    <ClCompile Include="..\..\mstd-lib\std_string.cpp" />
+    <ClCompile Include="..\..\mstd-lib\std_text.cpp" />
+    <ClCompile Include="..\..\mstd-lib\std_thread_pool.cpp" />
+    <ClCompile Include="..\..\mstd-lib\Windows\std_common.cpp" />
+    <ClCompile Include="..\..\mstd-lib\Windows\std_device.cpp" />
+    <ClCompile Include="..\..\mstd-lib\Windows\std_display_enum.cpp" />
+    <ClCompile Include="..\..\mstd-lib\Windows\std_window.cpp" />
+    <ClCompile Include="..\..\mstd-lib\Windows\std_window_message.cpp" />
+    <ClCompile Include="..\..\mstd-lib\Windows\std_window_settings.cpp" />
+    <ClCompile Include="..\..\sdk\imgui\backends\imgui_impl_dx9.cpp" />
+    <ClCompile Include="..\..\sdk\imgui\backends\imgui_impl_win32.cpp" />
+    <ClCompile Include="..\..\sdk\imgui\imgui.cpp" />
+    <ClCompile Include="..\..\sdk\imgui\imgui_demo.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\sdk\imgui\imgui_draw.cpp" />
+    <ClCompile Include="..\..\sdk\imgui\imgui_tables.cpp" />
+    <ClCompile Include="..\..\sdk\imgui\imgui_widgets.cpp" />
+    <ClCompile Include="..\..\sdk\imgui\misc\cpp\imgui_stdlib.cpp" />
+    <ClCompile Include="..\..\sony-lib\sony_bitstream.cpp" />
+    <ClCompile Include="..\..\sony-lib\sony_texture.cpp" />
+    <ClCompile Include="Source\app.cpp" />
+    <ClCompile Include="Source\app_config.cpp" />
+    <ClCompile Include="Source\app_file.cpp" />
+    <ClCompile Include="Source\app_imgui.cpp" />
+    <ClCompile Include="Source\main.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\mstd-lib\DX9\std_dx9.h" />
+    <ClInclude Include="..\..\mstd-lib\std_basic_fstream.h" />
+    <ClInclude Include="..\..\mstd-lib\std_crc32.h" />
+    <ClInclude Include="..\..\mstd-lib\std_cstyle.h" />
+    <ClInclude Include="..\..\mstd-lib\std_data_types.h" />
+    <ClInclude Include="..\..\mstd-lib\std_debug.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+      </ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+      </ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\mstd-lib\std_defines.h" />
+    <ClInclude Include="..\..\mstd-lib\std_exception.h" />
+    <ClInclude Include="..\..\mstd-lib\std_filesystem.h" />
+    <ClInclude Include="..\..\mstd-lib\std_image.h" />
+    <ClInclude Include="..\..\mstd-lib\std_string.h" />
+    <ClInclude Include="..\..\mstd-lib\std_text.h" />
+    <ClInclude Include="..\..\mstd-lib\std_thread_pool.h" />
+    <ClInclude Include="..\..\mstd-lib\Windows\std_common.h" />
+    <ClInclude Include="..\..\mstd-lib\Windows\std_device.h" />
+    <ClInclude Include="..\..\mstd-lib\Windows\std_window.h" />
+    <ClInclude Include="..\..\sdk\imgui\backends\imgui_impl_dx9.h" />
+    <ClInclude Include="..\..\sdk\imgui\backends\imgui_impl_win32.h" />
+    <ClInclude Include="..\..\sdk\imgui\imconfig.h" />
+    <ClInclude Include="..\..\sdk\imgui\imgui.h" />
+    <ClInclude Include="..\..\sdk\imgui\imgui_internal.h" />
+    <ClInclude Include="..\..\sdk\imgui\imstb_rectpack.h" />
+    <ClInclude Include="..\..\sdk\imgui\imstb_textedit.h" />
+    <ClInclude Include="..\..\sdk\imgui\imstb_truetype.h" />
+    <ClInclude Include="..\..\sdk\imgui\misc\cpp\imgui_stdlib.h" />
+    <ClInclude Include="..\..\sony-lib\sony_bitstream.h" />
+    <ClInclude Include="..\..\sony-lib\sony_bitstream_table.h" />
+    <ClInclude Include="..\..\sony-lib\sony_texture.h" />
+    <ClInclude Include="Source\app.h" />
+    <ClInclude Include="Windows\Resource.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Windows\Icon.ico" />
+    <Image Include="Windows\small.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Windows\Resource.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Xml Include="Windows\manifest.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>17.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{b5c74166-321a-42bc-8495-2d0d327a8616}</ProjectGuid>
+    <RootNamespace>ps-image</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>$(SolutionDir)Build\$(Configuration)\$(Platform)\</OutDir>
+    <IntDir>Build\Intermediate\$(Configuration)\$(Platform)\</IntDir>
+    <TargetName>ps-image</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>$(SolutionDir)Build\$(Configuration)\$(Platform)\</OutDir>
+    <IntDir>Build\Intermediate\$(Configuration)\$(Platform)\</IntDir>
+    <TargetName>ps-image</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <OutDir>$(SolutionDir)Build\$(Configuration)\$(Platform)\</OutDir>
+    <IntDir>Build\Intermediate\$(Configuration)\$(Platform)\</IntDir>
+    <TargetName>ps-image</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <OutDir>$(SolutionDir)Build\$(Configuration)\$(Platform)\</OutDir>
+    <IntDir>Build\Intermediate\$(Configuration)\$(Platform)\</IntDir>
+    <TargetName>ps-image</TargetName>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;MSTD_DEVICE;MSTD_DX9;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <AdditionalIncludeDirectories>$(SolutionDir)Windows;../../mstd-lib;../../mstd-lib/Windows;../../mstd-lib/DX9;../../sony-lib;../../sdk/imgui;../../sdk/imgui/backends;../../sdk/imgui/misc/cpp;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <Manifest>
+      <AdditionalManifestFiles>".\\Windows\\manifest.xml" %(AdditionalManifestFiles)</AdditionalManifestFiles>
+    </Manifest>
+    <Manifest>
+      <OutputManifestFile />
+    </Manifest>
+    <ManifestResourceCompile>
+      <ResourceOutputFileName />
+    </ManifestResourceCompile>
+    <Manifest>
+      <EnableDpiAwareness>true</EnableDpiAwareness>
+    </Manifest>
+    <PreBuildEvent>
+      <Command>copy /y ".//icons.png" "$(SolutionDir)Build\$(Configuration)\$(Platform)\icons.png"</Command>
+    </PreBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;MSTD_DEVICE;MSTD_DX9;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <AdditionalIncludeDirectories>$(SolutionDir)Windows;../../mstd-lib;../../mstd-lib/Windows;../../mstd-lib/DX9;../../sony-lib;../../sdk/imgui;../../sdk/imgui/backends;../../sdk/imgui/misc/cpp;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <Manifest>
+      <AdditionalManifestFiles>".\\Windows\\manifest.xml" %(AdditionalManifestFiles)</AdditionalManifestFiles>
+      <EnableDpiAwareness>true</EnableDpiAwareness>
+    </Manifest>
+    <PreBuildEvent>
+      <Command>copy /y ".//icons.png" "$(SolutionDir)Build\$(Configuration)\$(Platform)\icons.png"</Command>
+    </PreBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_DEBUG;_WINDOWS;MSTD_DEVICE;MSTD_DX9;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <AdditionalIncludeDirectories>$(SolutionDir)Windows;../../mstd-lib;../../mstd-lib/Windows;../../mstd-lib/DX9;../../sony-lib;../../sdk/imgui;../../sdk/imgui/backends;../../sdk/imgui/misc/cpp;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <Manifest>
+      <AdditionalManifestFiles>".\\Windows\\manifest.xml" %(AdditionalManifestFiles)</AdditionalManifestFiles>
+      <OutputManifestFile />
+      <EnableDpiAwareness>true</EnableDpiAwareness>
+    </Manifest>
+    <ManifestResourceCompile>
+      <ResourceOutputFileName />
+    </ManifestResourceCompile>
+    <PreBuildEvent>
+      <Command>copy /y ".//icons.png" "$(SolutionDir)Build\$(Configuration)\$(Platform)\icons.png"</Command>
+    </PreBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;_WINDOWS;MSTD_DEVICE;MSTD_DX9;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <AdditionalIncludeDirectories>$(SolutionDir)Windows;../../mstd-lib;../../mstd-lib/Windows;../../mstd-lib/DX9;../../sony-lib;../../sdk/imgui;../../sdk/imgui/backends;../../sdk/imgui/misc/cpp;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <Manifest>
+      <AdditionalManifestFiles>".\\Windows\\manifest.xml" %(AdditionalManifestFiles)</AdditionalManifestFiles>
+      <EnableDpiAwareness>true</EnableDpiAwareness>
+    </Manifest>
+    <PreBuildEvent>
+      <Command>copy /y ".//icons.png" "$(SolutionDir)Build\$(Configuration)\$(Platform)\icons.png"</Command>
+    </PreBuildEvent>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+    <Import Project="packages\Microsoft.DXSDK.D3DX.9.29.952.8\build\native\Microsoft.DXSDK.D3DX.targets" Condition="Exists('packages\Microsoft.DXSDK.D3DX.9.29.952.8\build\native\Microsoft.DXSDK.D3DX.targets')" />
+  </ImportGroup>
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('packages\Microsoft.DXSDK.D3DX.9.29.952.8\build\native\Microsoft.DXSDK.D3DX.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\Microsoft.DXSDK.D3DX.9.29.952.8\build\native\Microsoft.DXSDK.D3DX.targets'))" />
+  </Target>
+</Project>

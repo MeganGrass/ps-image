@@ -1,0 +1,9 @@
+[submodule "sdk/imgui"]
+	path = sdk/imgui
+	url = https://github.com/ocornut/imgui
+[submodule "mstd-lib"]
+	path = mstd-lib
+	url = https://github.com/MeganGrass/mstd-lib
+[submodule "sony-lib"]
+	path = sony-lib
+	url = https://github.com/MeganGrass/sony-lib

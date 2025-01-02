@@ -1,0 +1,253 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Standard">
+      <UniqueIdentifier>{03f8666b-4af7-4ebc-894f-b377d4c31990}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Standard\Windows">
+      <UniqueIdentifier>{8cd4ed6f-51da-4ab3-b869-dfc30fd48422}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Windows">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Standard\Debug">
+      <UniqueIdentifier>{ace2950c-68ad-4e05-9e24-34f33c288729}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sony">
+      <UniqueIdentifier>{06d67bcf-2eda-4cb2-b1d2-27505af50c2d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Standard\DX9">
+      <UniqueIdentifier>{c1761d5c-6ae8-4d79-bc20-c07ef511c194}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Imgui">
+      <UniqueIdentifier>{9d8e390a-886c-4499-9385-92be596f0bbc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Imgui\backends">
+      <UniqueIdentifier>{77c55aae-2142-4190-b2bc-c28e2cf6865a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Imgui\misc">
+      <UniqueIdentifier>{9e56711b-89e0-4970-8bde-97b0615e7fe9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source">
+      <UniqueIdentifier>{e827c992-ebc2-4aa7-bec4-f6b614491433}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\mstd-lib\std_basic_fstream.cpp">
+      <Filter>Standard</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\mstd-lib\std_crc32.cpp">
+      <Filter>Standard</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\mstd-lib\std_exception.cpp">
+      <Filter>Standard</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\mstd-lib\std_filesystem.cpp">
+      <Filter>Standard</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\mstd-lib\std_image.cpp">
+      <Filter>Standard</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\mstd-lib\std_string.cpp">
+      <Filter>Standard</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\mstd-lib\Windows\std_common.cpp">
+      <Filter>Standard\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\mstd-lib\Windows\std_device.cpp">
+      <Filter>Standard\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\mstd-lib\Windows\std_display_enum.cpp">
+      <Filter>Standard\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\mstd-lib\Windows\std_window.cpp">
+      <Filter>Standard\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\mstd-lib\Windows\std_window_message.cpp">
+      <Filter>Standard\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\mstd-lib\Windows\std_window_settings.cpp">
+      <Filter>Standard\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\mstd-lib\std_debug.cpp">
+      <Filter>Standard\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\sony-lib\sony_texture.cpp">
+      <Filter>Sony</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\sony-lib\sony_bitstream.cpp">
+      <Filter>Sony</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\mstd-lib\DX9\std_dx9.cpp">
+      <Filter>Standard\DX9</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\mstd-lib\DX9\std_dx9_pixel_passthrough.cpp">
+      <Filter>Standard\DX9</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\mstd-lib\DX9\std_dx9_playstation_dither.cpp">
+      <Filter>Standard\DX9</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\mstd-lib\DX9\std_dx9_vert_shader.cpp">
+      <Filter>Standard\DX9</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\mstd-lib\std_thread_pool.cpp">
+      <Filter>Standard</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\sdk\imgui\imgui.cpp">
+      <Filter>Imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\sdk\imgui\imgui_demo.cpp">
+      <Filter>Imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\sdk\imgui\imgui_draw.cpp">
+      <Filter>Imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\sdk\imgui\imgui_tables.cpp">
+      <Filter>Imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\sdk\imgui\imgui_widgets.cpp">
+      <Filter>Imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\sdk\imgui\backends\imgui_impl_win32.cpp">
+      <Filter>Imgui\backends</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\sdk\imgui\backends\imgui_impl_dx9.cpp">
+      <Filter>Imgui\backends</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\sdk\imgui\misc\cpp\imgui_stdlib.cpp">
+      <Filter>Imgui\misc</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\app.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\main.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\app_imgui.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\app_file.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\app_config.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\mstd-lib\std_text.cpp">
+      <Filter>Standard</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Windows\Resource.h">
+      <Filter>Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\mstd-lib\std_basic_fstream.h">
+      <Filter>Standard</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\mstd-lib\std_crc32.h">
+      <Filter>Standard</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\mstd-lib\std_cstyle.h">
+      <Filter>Standard</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\mstd-lib\std_data_types.h">
+      <Filter>Standard</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\mstd-lib\std_defines.h">
+      <Filter>Standard</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\mstd-lib\std_exception.h">
+      <Filter>Standard</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\mstd-lib\std_filesystem.h">
+      <Filter>Standard</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\mstd-lib\std_image.h">
+      <Filter>Standard</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\mstd-lib\std_string.h">
+      <Filter>Standard</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\mstd-lib\Windows\std_common.h">
+      <Filter>Standard\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\mstd-lib\Windows\std_device.h">
+      <Filter>Standard\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\mstd-lib\Windows\std_window.h">
+      <Filter>Standard\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\mstd-lib\std_debug.h">
+      <Filter>Standard\Debug</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\sony-lib\sony_texture.h">
+      <Filter>Sony</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\sony-lib\sony_bitstream.h">
+      <Filter>Sony</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\sony-lib\sony_bitstream_table.h">
+      <Filter>Sony</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\mstd-lib\DX9\std_dx9.h">
+      <Filter>Standard\DX9</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\mstd-lib\std_thread_pool.h">
+      <Filter>Standard</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\sdk\imgui\imconfig.h">
+      <Filter>Imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\sdk\imgui\imgui.h">
+      <Filter>Imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\sdk\imgui\imgui_internal.h">
+      <Filter>Imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\sdk\imgui\imstb_rectpack.h">
+      <Filter>Imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\sdk\imgui\imstb_textedit.h">
+      <Filter>Imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\sdk\imgui\imstb_truetype.h">
+      <Filter>Imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\sdk\imgui\backends\imgui_impl_win32.h">
+      <Filter>Imgui\backends</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\sdk\imgui\backends\imgui_impl_dx9.h">
+      <Filter>Imgui\backends</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\sdk\imgui\misc\cpp\imgui_stdlib.h">
+      <Filter>Imgui\misc</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\app.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\mstd-lib\std_text.h">
+      <Filter>Standard</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Windows\Icon.ico">
+      <Filter>Windows</Filter>
+    </Image>
+    <Image Include="Windows\small.ico">
+      <Filter>Windows</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Windows\Resource.rc">
+      <Filter>Windows</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Xml Include="Windows\manifest.xml">
+      <Filter>Windows</Filter>
+    </Xml>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+</Project>
