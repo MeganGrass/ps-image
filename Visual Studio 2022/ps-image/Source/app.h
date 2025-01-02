@@ -7,7 +7,7 @@
 
 #pragma once
 
-#include <resource.h>
+#include <Resource.h>
 
 #include <std_window.h>
 
