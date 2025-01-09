@@ -97,14 +97,14 @@
     <ClInclude Include="..\..\sony-lib\sony_bitstream_table.h" />
     <ClInclude Include="..\..\sony-lib\sony_texture.h" />
     <ClInclude Include="Source\app.h" />
-    <ClInclude Include="Windows\Resource.h" />
+    <ClInclude Include="Windows\resource.h" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="Windows\Icon.ico" />
+    <Image Include="Windows\icon.ico" />
     <Image Include="Windows\small.ico" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="Windows\Resource.rc" />
+    <ResourceCompile Include="Windows\resource.rc" />
   </ItemGroup>
   <ItemGroup>
     <Xml Include="Windows\manifest.xml" />

@@ -11,7 +11,7 @@
 
 void Global_Application::OpenConfig(void)
 {
-	Standard_String Str;
+	if (b_Shutdown) { return; }
 
 	std::unique_ptr<StdText> Text = std::make_unique<StdText>(GetConfigFilename(), FileAccessMode::Read_Ex, TextFileBOM::UTF16_LE);
 	if (!Text->IsOpen())
@@ -19,8 +19,6 @@ void Global_Application::OpenConfig(void)
 		Str.Message("Error, could not open \"%ws\" app config", GetConfigFilename().filename().wstring().c_str());
 		return;
 	}
-
-	Standard_FileSystem FS;
 
 	for (std::size_t i = 0; i < Text->GetLineCount(); i++)
 	{
@@ -79,11 +77,20 @@ void Global_Application::OpenConfig(void)
 					b_Raw16bpp = false;
 					break;
 				case 16:
+				default:
 					b_Raw4bpp = false;
 					b_Raw8bpp = false;
 					b_Raw16bpp = true;
 					break;
 				}
+			}
+			if (Str.ToUpper(Args[0]) == L"B_RAWEXTERNALPIXELS")
+			{
+				b_RawExternalPixels = std::stoi(Args[1]);
+			}
+			if (Str.ToUpper(Args[0]) == L"B_RAWEXTERNALPIXELSFROMTIM")
+			{
+				b_RawExternalPixelsFromTIM = std::stoi(Args[1]);
 			}
 			if (Str.ToUpper(Args[0]) == L"B_RAWEXTERNALPALETTE")
 			{
@@ -100,10 +107,12 @@ void Global_Application::OpenConfig(void)
 			if (Str.ToUpper(Args[0]) == L"M_RAWWIDTH")
 			{
 				m_RawWidth = std::stoi(Args[1]);
+				m_RawWidth = std::clamp(m_RawWidth, 1, 1024);
 			}
 			if (Str.ToUpper(Args[0]) == L"M_RAWHEIGHT")
 			{
 				m_RawHeight = std::stoi(Args[1]);
+				m_RawHeight = std::clamp(m_RawHeight, 1, 512);
 			}
 			if (Str.ToUpper(Args[0]) == L"M_RAWPALETTECOUNT")
 			{
@@ -116,12 +125,14 @@ void Global_Application::OpenConfig(void)
 			if (Str.ToUpper(Args[0]) == L"M_RAWPIXELPTR")
 			{
 				m_RawPixelPtr = std::stoull(Args[1], nullptr, 16);
-				m_RawPixelPtrStr = Str.GetHex(m_RawPixelPtr);
 			}
 			if (Str.ToUpper(Args[0]) == L"M_RAWPALETTEPTR")
 			{
 				m_RawPalettePtr = std::stoull(Args[1], nullptr, 16);
-				m_RawPalettePtrStr = Str.GetHex(m_RawPalettePtr);
+			}
+			if (Str.ToUpper(Args[0]) == L"M_RAWPIXELFILENAME")
+			{
+				m_RawPixelFilename = Args[1];
 			}
 			if (Str.ToUpper(Args[0]) == L"M_RAWPALETTEFILENAME")
 			{
@@ -146,13 +157,21 @@ void Global_Application::OpenConfig(void)
 			{
 				b_Dithering = std::stoi(Args[1]);
 			}
+			if (Str.ToUpper(Args[0]) == L"M_FILTERING")
+			{
+				m_TextureFilter = (D3DTEXTUREFILTERTYPE)std::stoi(Args[1]);
+
+				std::uintmax_t iTextureFilterType = m_TextureFilter;
+				iTextureFilterType = std::clamp(iTextureFilterType, 0ULL, 3ULL);
+				m_TextureFilter = (D3DTEXTUREFILTERTYPE)iTextureFilterType;
+			}
 			if (Str.ToUpper(Args[0]) == L"B_TRANSPARENCY")
 			{
 				b_Transparency = std::stoi(Args[1]);
 			}
-			if (Str.ToUpper(Args[0]) == L"B_TRANSPARENCY16BPP")
+			if (Str.ToUpper(Args[0]) == L"B_TRANSPARENCYSUPERIMPOSED")
 			{
-				b_Transparency16bpp = std::stoi(Args[1]);
+				b_TransparencySuperimposed = std::stoi(Args[1]);
 			}
 
 			if (Str.ToUpper(Args[0]) == L"B_VIEWTOOLBAR")
@@ -207,7 +226,7 @@ void Global_Application::OpenConfig(void)
 
 void Global_Application::SaveConfig(void)
 {
-	Standard_String Str;
+	if (b_Shutdown) { return; }
 
 	std::unique_ptr<StdText> Text = std::make_unique<StdText>(GetConfigFilename(), FileAccessMode::Write_Ex, TextFileBOM::UTF16_LE);
 	if (!Text->IsOpen())
@@ -215,6 +234,8 @@ void Global_Application::SaveConfig(void)
 		Str.Message("Error, could not create \"%ws\" app config", GetConfigFilename().filename().wstring().c_str());
 		return;
 	}
+
+	Text->AddLine(L"app\t\"%ws\"\r", Window->GetModuleStr().c_str());
 
 	Text->AddLine(L"m_Font\t%ws\r", Window->GetFont().stem().wstring().c_str());
 	Text->AddLine(L"m_FontSize\t%.0f\r", Window->FontSize());
@@ -227,6 +248,8 @@ void Global_Application::SaveConfig(void)
 	Text->AddLine(L"m_Filename\t\"%ws\"\r", m_Filename.wstring().c_str());
 
 	Text->AddLine(L"b_RawBpp\t%d\r", b_Raw4bpp ? 4 : b_Raw8bpp ? 8 : b_Raw16bpp ? 16 : 0);
+	Text->AddLine(L"b_RawExternalPixels\t%d\r", b_RawExternalPixels);
+	Text->AddLine(L"b_RawExternalPixelsFromTIM\t%d\r", b_RawExternalPixelsFromTIM);
 	Text->AddLine(L"b_RawExternalPalette\t%d\r", b_RawExternalPalette);
 	Text->AddLine(L"b_RawExternalPaletteFromTIM\t%d\r", b_RawExternalPaletteFromTIM);
 	Text->AddLine(L"b_RawImportAllPalettesFromTIM\t%d\r", b_RawImportAllPalettesFromTIM);
@@ -236,6 +259,7 @@ void Global_Application::SaveConfig(void)
 	Text->AddLine(L"m_RawPaletteID\t%d\r", m_RawPaletteID);
 	Text->AddLine(L"m_RawPixelPtr\t0x%llx\r", m_RawPixelPtr);
 	Text->AddLine(L"m_RawPalettePtr\t0x%llx\r", m_RawPalettePtr);
+	Text->AddLine(L"m_RawPixelFilename\t\"%ws\"\r", m_RawPixelFilename.wstring().c_str());
 	Text->AddLine(L"m_RawPaletteFilename\t\"%ws\"\r", m_RawPaletteFilename.wstring().c_str());
 
 	Text->AddLine(L"m_BistreamWidth\t%d\r", m_BistreamWidth);
@@ -243,8 +267,9 @@ void Global_Application::SaveConfig(void)
 
 	Text->AddLine(L"m_ImageZoom\t%f\r", m_ImageZoom);
 	Text->AddLine(L"b_Dithering\t%d\r", b_Dithering);
+	Text->AddLine(L"m_Filtering\t%d\r", m_TextureFilter);
 	Text->AddLine(L"b_Transparency\t%d\r", b_Transparency);
-	Text->AddLine(L"b_Transparency16bpp\t%d\r", b_Transparency16bpp);
+	Text->AddLine(L"b_TransparencySuperimposed\t%d\r", b_TransparencySuperimposed);
 
 	Text->AddLine(L"b_ViewToolbar\t%d\r", b_ViewToolbar);
 	Text->AddLine(L"b_ViewStatusbar\t%d\r", b_ViewStatusbar);
