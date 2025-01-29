@@ -11,9 +11,13 @@ std::unique_ptr<Global_Application> G = std::make_unique<Global_Application>();
 
 std::function<void()> CreateModalFunc = []() {};
 
+std::function<void(std::filesystem::path)> SearchModalFunc = [](std::filesystem::path) {};
+
 static String ImGuiIniFilename = "";
 
 static ImGuiContext* Context = nullptr;
+
+static bool IsDrawing = false;
 
 void Global_Application::About(void) const
 {
@@ -36,11 +40,26 @@ void Global_Application::About(void) const
 	G->Window->MessageModal(L"About", L"", Str.GetWide(AboutStr));
 }
 
+void Global_Application::Controls(void) const
+{
+	Standard_String Str;
+
+	String ControlsStr = Str.FormatCStyle("CTRL+O -- Open (any file type)");
+	ControlsStr += Str.FormatCStyle("\r\nCTRL+N -- New Sony PlayStation Texture Image (*.TIM)");
+	ControlsStr += Str.FormatCStyle("\r\nCTRL+S -- Save Sony PlayStation Texture Image (*.TIM)");
+	ControlsStr += Str.FormatCStyle("\r\nUP/DOWN -- View previous/next texture (when file count > 1)");
+	ControlsStr += Str.FormatCStyle("\r\nLEFT/RIGHT -- View previous/next color lookup table (palette)");
+	ControlsStr += Str.FormatCStyle("\r\nCTRL+MOUSEWHEEL -- Adjust image zoom");
+	ControlsStr += Str.FormatCStyle("\r\nF11 -- Enter/Exit fullscreen mode");
+	ControlsStr += Str.FormatCStyle("\r\nCTRL+? -- About this application");
+	ControlsStr += Str.FormatCStyle("\r\nESC -- Exit Application");
+
+	G->Window->MessageModal(L"Controls", L"", Str.GetWide(ControlsStr));
+}
+
 void Global_Application::Draw(void)
 {
-	if (!Render->NormalState()) { return; }
-
-	if (!Context) { return; }
+	if (!Context || !Render->NormalState()) { return; }
 
 	if (b_FontChangeRequested)
 	{
@@ -56,6 +75,13 @@ void Global_Application::Draw(void)
 		ImGui_ImplDX9_CreateDeviceObjects();
 	}
 
+	if (b_ResetTextureRequested)
+	{
+		b_ResetTextureRequested = false;
+
+		ResetTexture();
+	}
+
 	ImGui_ImplDX9_NewFrame();
 	ImGui_ImplWin32_NewFrame();
 
@@ -65,93 +91,96 @@ void Global_Application::Draw(void)
 		//ImGui::ShowDemoWindow(&show_demo_window);
 
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 7.4f);
+		ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, 7.4f);
+		ImGui::PushStyleVar(ImGuiStyleVar_PopupRounding, 7.4f);
+		ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, 7.4f);
+		ImGui::PushStyleVar(ImGuiStyleVar_ScrollbarRounding, 7.4f);
+		ImGui::PushStyleVar(ImGuiStyleVar_GrabRounding, 7.4f);
+		ImGui::PushStyleVar(ImGuiStyleVar_TabRounding, 7.4f);
 
 		MainMenu();
-
 		Toolbar();
-
 		Statusbar();
-
 		Options();
-
 		FileBrowser();
-
 		Palette();
-
 		BitstreamSettings();
-
 		ImageSettings();
-
 		ImageWindow();
 
+		ImGui::PopStyleVar();
+		ImGui::PopStyleVar();
+		ImGui::PopStyleVar();
+		ImGui::PopStyleVar();
+		ImGui::PopStyleVar();
+		ImGui::PopStyleVar();
 		ImGui::PopStyleVar();
 	}
 	ImGui::EndFrame();
 
-	if (!Render->NormalState()) { return; }
+	if (Render->NormalState())
+	{
+		Render->Device()->SetRenderState(D3DRS_ZENABLE, FALSE);
+		Render->Device()->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
+		Render->Device()->SetRenderState(D3DRS_SCISSORTESTENABLE, FALSE);
 
-	Render->Device()->SetRenderState(D3DRS_ZENABLE, FALSE);
-	Render->Device()->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
-	Render->Device()->SetRenderState(D3DRS_SCISSORTESTENABLE, FALSE);
+		Render->Device()->Clear(0, NULL,
+			D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER,
+			D3DCOLOR_XRGB(GetRValue(Window->GetColor()), GetGValue(Window->GetColor()), GetBValue(Window->GetColor())),
+			1.0f, 0);
+		Render->Device()->BeginScene();
 
-	Render->Device()->Clear(0, NULL,
-		D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER,
-		D3DCOLOR_XRGB(GetRValue(Window->GetColor()), GetGValue(Window->GetColor()), GetBValue(Window->GetColor())),
-		1.0f, 0);
-	Render->Device()->BeginScene();
+		ImGui::Render();
+		ImGui_ImplDX9_RenderDrawData(ImGui::GetDrawData());
 
-	ImGui::Render();
-	ImGui_ImplDX9_RenderDrawData(ImGui::GetDrawData());
-
-	Render->Device()->EndScene();
-	Render->Device()->PresentEx(NULL, NULL, NULL, NULL, NULL);
+		Render->Device()->EndScene();
+		Render->Device()->PresentEx(NULL, NULL, NULL, NULL, NULL);
+	}
 }
 
 void Global_Application::Update(void)
 {
-	if (!Render->NormalState()) { return; }
+	if (!Context || !Render->NormalState()) { return; }
 
-	if (Window->Device()->GetKeyDown(VK_F11))
+	if (!ImGui::GetKeyData(ImGuiKey_Escape)->DownDuration)
+	{
+		PostMessage(Window->Get(), WM_CLOSE, 0, 0);
+		return;
+	}
+
+	if (!ImGui::GetKeyData(ImGuiKey_F11)->DownDuration)
 	{
 		Window->AutoFullscreen();
 	}
 
-	if (Window->Device()->GetKeyDown(VK_DOWN))
+	if (!ImGui::GetKeyData(ImGuiKey_DownArrow)->DownDuration)
 	{
 		SetTexture(++m_SelectedFile);
 	}
 
-	if (Window->Device()->GetKeyDown(VK_UP))
+	if (!ImGui::GetKeyData(ImGuiKey_UpArrow)->DownDuration)
 	{
 		SetTexture(--m_SelectedFile);
 	}
 
-	if (Window->Device()->GetKeyDown(VK_LEFT))
+	if (!ImGui::GetKeyData(ImGuiKey_LeftArrow)->DownDuration)
 	{
 		SetPalette(--m_Palette);
 	}
 
-	if (Window->Device()->GetKeyDown(VK_RIGHT))
+	if (!ImGui::GetKeyData(ImGuiKey_RightArrow)->DownDuration)
 	{
 		SetPalette(++m_Palette);
 	}
 
-	if (Window->Device()->GetKeyDown(VK_ESCAPE))
+	if (ImGui::GetIO().KeyCtrl)
 	{
-		PostMessage(Window->Get(), WM_CLOSE, 0, 0);
-	}
-
-	ImGuiIO& io = ImGui::GetIO();
-	if (io.KeyCtrl)
-	{
-		// CTRL + O
-		if (Window->Device()->GetKeyDown(0x4F))
+		if (!ImGui::GetKeyData(ImGuiKey_O)->DownDuration)
 		{
 			Open();
 		}
 
-		// CTRL + N
-		if (Window->Device()->GetKeyDown(0x4E))
+		if (!ImGui::GetKeyData(ImGuiKey_N)->DownDuration)
 		{
 			CreateModalFunc = [this]()
 				{
@@ -159,14 +188,13 @@ void Global_Application::Update(void)
 				};
 		}
 
-		// CTRL + S
-		if (Window->Device()->GetKeyDown(0x53))
+		if (!ImGui::GetKeyData(ImGuiKey_S)->DownDuration)
 		{
 			SaveAs();
 		}
 
 		// CTRL + MOUSEWHEEL
-		if (Window->Device()->GetMouseDeltaZ() != 0.0f)
+		if (Window->Device()->GetMouseDeltaZ())
 		{
 			m_ImageZoom += Window->Device()->GetMouseDeltaZ() * 0.25f;
 			m_ImageZoom = std::clamp(m_ImageZoom, m_ImageZoomMin, m_ImageZoomMax);
@@ -269,6 +297,34 @@ int Global_Application::Main(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWST
 		IMGUI_CHECKVERSION();
 		Context = ImGui::CreateContext();
 		ImGui::StyleColorsDark();
+
+		{
+			float CaptionRed = float(GetRValue(Window->GetCaptionColor())) / 255;
+			float CaptionGreen = float(GetGValue(Window->GetCaptionColor())) / 255;
+			float CaptionBlue = float(GetBValue(Window->GetCaptionColor())) / 255;
+
+			float BorderRed = float(GetRValue(Window->GetBorderColor())) / 255;
+			float BorderGreen = float(GetGValue(Window->GetBorderColor())) / 255;
+			float BorderBlue = float(GetBValue(Window->GetBorderColor())) / 255;
+
+			ImGui::GetStyle().WindowBorderSize = 0.0f;
+
+			ImGui::GetStyle().Colors[ImGuiCol_PopupBg] = ImGui::GetStyle().Colors[ImGuiCol_WindowBg];
+
+			ImGui::GetStyle().Colors[ImGuiCol_MenuBarBg] = ImVec4(CaptionRed, CaptionGreen, CaptionBlue, 1.0f);
+
+			ImGui::GetStyle().Colors[ImGuiCol_TitleBg] = ImVec4(CaptionRed, CaptionGreen, CaptionBlue, 1.0f);
+			ImGui::GetStyle().Colors[ImGuiCol_TitleBgActive] = ImVec4(CaptionRed, CaptionGreen, CaptionBlue, 1.0f);
+			ImGui::GetStyle().Colors[ImGuiCol_TitleBgCollapsed] = ImVec4(CaptionRed, CaptionGreen, CaptionBlue, 1.0f);
+
+			ImGui::GetStyle().Colors[ImGuiCol_Button] = ImVec4(CaptionRed, CaptionGreen, CaptionBlue, 1.0f);
+			ImGui::GetStyle().Colors[ImGuiCol_ButtonHovered] = ImVec4(BorderRed, BorderGreen, BorderBlue, 1.0f);
+			ImGui::GetStyle().Colors[ImGuiCol_ButtonActive] = ImVec4(BorderRed * 2, BorderGreen * 2, BorderBlue * 2, 1.0f);
+
+			ImGui::GetStyle().Colors[ImGuiCol_FrameBg] = ImVec4(CaptionRed, CaptionGreen, CaptionBlue, 1.0f);
+			ImGui::GetStyle().Colors[ImGuiCol_FrameBgHovered] = ImVec4(BorderRed, BorderGreen, BorderBlue, 1.0f);
+			ImGui::GetStyle().Colors[ImGuiCol_FrameBgActive] = ImVec4(BorderRed * 2, BorderGreen * 2, BorderBlue * 2, 1.0f);
+		}
 
 		ImGuiIO& io = ImGui::GetIO();
 		io.IniFilename = ImGuiIniFilename.c_str();

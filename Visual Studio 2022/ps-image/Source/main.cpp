@@ -15,41 +15,23 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
 
 LRESULT CALLBACK WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-	if ((message == WM_CLOSE) || (message == WM_DESTROY))
+	if (message == WM_CLOSE || message == WM_DESTROY)
 	{
 		G->Shutdown();
-	}
-
-	if (message == WM_COMMAND)
-	{
-		if (LOWORD(wParam) == IDM_EXIT)
-		{
-			G->Shutdown();
-		}
-		if (LOWORD(wParam) == IDM_ABOUT)
-		{
-			G->About();
-		}
 	}
 
 	if (G->Render && G->Render->NormalState())
 	{
 		if (message == WM_ACTIVATE)
 		{
-			if ((wParam & WA_ACTIVE) || (wParam & WA_CLICKACTIVE))
+			if (wParam & WA_ACTIVE || wParam & WA_CLICKACTIVE)
 			{
 				G->Render->Device()->Reset(G->Render->GetPresentParameters());
 			}
 		}
 
-		if (message == WM_SETFOCUS)
-		{
-			G->Render->Device()->Reset(G->Render->GetPresentParameters());
-		}
-
 		if (message == WM_WINDOWPOSCHANGED)
 		{
-			hWnd = G->Render->Window()->Get();
 			RECT Rect = G->Window->GetRect();
 			WINDOWPOS WindowPos{};
 			WindowPos.hwnd = hWnd;
@@ -59,13 +41,13 @@ LRESULT CALLBACK WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPara
 			WindowPos.cx = (Rect.right - Rect.left);
 			WindowPos.cy = (Rect.bottom - Rect.top);
 			WindowPos.flags = SWP_NOZORDER | SWP_NOREDRAW | SWP_NOACTIVATE | SWP_NOCOPYBITS | SWP_NOOWNERZORDER | SWP_DEFERERASE | SWP_ASYNCWINDOWPOS;
-			SendMessage(hWnd, WM_WINDOWPOSCHANGED, 0, (LPARAM)&WindowPos);
+			SendMessage(G->Render->Window()->Get(), WM_WINDOWPOSCHANGED, 0, (LPARAM)&WindowPos);
 		}
-	}
 
-	if ((G->Render && G->Render->NormalState()) && (ImGui_ImplWin32_WndProcHandler(hWnd, message, wParam, lParam)))
-	{
-		return true;
+		if (ImGui_ImplWin32_WndProcHandler(hWnd, message, wParam, lParam))
+		{
+			return true;
+		}
 	}
 
 	if (message)

@@ -2,8 +2,8 @@
 Multi-purpose utility application for Sony PlayStation (PS1/PSone) textures and images
 
 ## Supported File Formats
-- Sony PlayStation Texture Image (*.TIM) *(4bpp, 8bpp and 16bpp supported)*
-- Sony PlayStation Bitstream (*.BS) *(Version 1/2 supported)*
+- Sony PlayStation Texture Image (*.TIM) *(4bpp, 8bpp, 16bpp and 24bpp)*
+- Sony PlayStation Bitstream (*.BS) *(Version 1/2)*
 
 ## Accessibility Features
 - DPI Awareness
@@ -24,16 +24,19 @@ Multi-purpose utility application for Sony PlayStation (PS1/PSone) textures and 
 - Color depth is retained in conversion
 
 ## Advanced Features
-##### **File Creator**
+##### **File Creation**
 - Create and save new PlayStation Texture Images
 - Import/Export pixel and/or palette data to/from any file (RAW)
 - Import/Export pixel and/or palette data to/from PlayStation Texture Images
 ##### **File Modifier**
 - Replace/Extract PlayStation Texture Images to/from any file type
-##### **Transparency**
-- Enable/Disable preview of color transparency
-- Preview transparent pixels as any color separately from palette (default: magic pink)
-- Superimposed transparency support, where transparent color is always palette index 0 (optional)
+##### **Semi/Transparency**
+- Preview any PlayStation Texture Image with basic semi/fully transparency effects (optional)
+- Preview any color separate from palette as semi/fully transparent (CLUT not required)
+- Superblack support, where solid black pixels are fully transparent
+- Superimposed support, where colors at palette index 0 are fully transparent (CLUT required)
+- Transparency Control Bit (STP) support for Half (50%back + 50%texture), Full (100%back + 100%texture), Inverse (100%back - 100%texture) and Quarter (100%back + 25%texture) modes
+- All bit depth modes supported (4bpp, 8bpp, 16bpp and 24bpp)
 ##### **Dither**
 - Preview textures as they would appear on a real Sony PlayStation (1994) with a built-in [Dithering Filter](https://en.wikipedia.org/wiki/Dither) (optional)
 ##### **Filter**
@@ -43,8 +46,8 @@ Multi-purpose utility application for Sony PlayStation (PS1/PSone) textures and 
 ##### **Color Lookup Table (CLUT)**
 - Modify and preview any palette in real-time
 - Add, Insert, Delete, Move, Copy and Paste entire palettes
-- Palettes are [15-bit](https://en.wikipedia.org/wiki/High_color) high color [indexes](https://en.wikipedia.org/wiki/Indexed_color) with truecolor [transparency](https://en.wikipedia.org/wiki/Palette_(computing)#Transparency_in_palettes) (superblack pixel) support
-- 4bpp *(16 color palette)* and  8bpp/16bpp *(256 color palette)* modes supported
+- Palettes are [15-bit](https://en.wikipedia.org/wiki/High_color) high color [indexes](https://en.wikipedia.org/wiki/Indexed_color) with [transparency](https://en.wikipedia.org/wiki/Palette_(computing)#Transparency_in_palettes) support
+- 4bpp *(16 color palette)* and  8bpp/16bpp/24bpp *(256 color palette)* modes supported
 - Microsoft RIFF Palette (*.PAL) support
 
 ## Bitstream Images
@@ -55,7 +58,7 @@ Any resolution supported ([640x480](https://en.wikipedia.org/wiki/PlayStation_te
 Bitstreams images are decoded to 32bpp raster data
 
 ## VRAM
-Preliminary support for modifying both CLUT and Pixel coordinates is available (_"File"_ window for pixels, _"Palette"_ window for palette)
+Preliminary support for modifying both CLUT and Pixel coordinates is available (_"File"_ window right-click for pixels, _"Palette"_ window for palette)
 
 Preview is not available
 
@@ -79,8 +82,8 @@ Preview is not available
 
 ## Images
 ![General Usage](/images/ps-image_00.jpg?raw=true "General Usage")
-![Dithering Off, image scaled to 64x, mouse cursor hovering pixel (21, 5)](/images/ps-image_02.jpg?raw=true "Dithering Off, image scaled to 64x, mouse cursor hovering pixel (21, 5)")
-![Dithering On, image scaled to 64x, mouse cursor hovering pixel (21, 6)](/images/ps-image_01.jpg?raw=true "Dithering On, image scaled to 64x, mouse cursor hovering pixel (21, 6)")
+![Image scaled to 64x, Dithering Off, Superblack pixels fully transparent, mouse cursor hovering pixel (21, 5)](/images/ps-image_01.jpg?raw=true "Image scaled to 64x, Dithering Off, Superblack pixels fully transparent, mouse cursor hovering pixel (21, 5)")
+![Image scaled to 64x, Dithering On, Superblack pixels fully transparent, mouse cursor hovering pixel (21, 6)](/images/ps-image_02.jpg?raw=true "Image scaled to 64x, Dithering On, Superblack pixels fully transparent, mouse cursor hovering pixel (21, 6)")
 ![Open RAW data prompt](/images/ps-image_03.jpg?raw=true "Open RAW data prompt")
 
 ## TODO
@@ -90,6 +93,7 @@ Preview is not available
 - VRAM features
 - Multi-file support
 - File import (*.BMP, *.PNG, etc.)
+- (?) Mixed Mode support
 - (?) Sony PlayStation Bitstream (*.BS) creation
 - (?) Sony PlayStation Texture Model (*.TMD) support
 

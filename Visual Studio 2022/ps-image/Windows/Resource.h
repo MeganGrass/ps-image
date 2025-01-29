@@ -14,15 +14,15 @@
 #define VER_OS                              5                 // 64-bit Windows
 
 
-#define VER_FILE_VERSION                    1,1,0,0
-#define VER_FILE_VERSION_STR                L"1.1.0.0\0\0"
-#define VER_PRODUCT_VERSION                 1,1,0,0
-#define VER_PRODUCT_VERSION_STR             L"1.1.0.0\0\0"
+#define VER_FILE_VERSION                    1,2,0,0
+#define VER_FILE_VERSION_STR                L"1.2.0.0\0\0"
+#define VER_PRODUCT_VERSION                 1,2,0,0
+#define VER_PRODUCT_VERSION_STR             L"1.2.0.0\0\0"
 
 
 #define VER_COMMENTS_STR                    L"\0\0"
 #define VER_COMPANY_NAME_STR                L"Megan Grass\0\0"
-#define VER_FILE_DESCRIPTION_STR            L"Sony PlayStation (1994) Image Viewer\0\0"
+#define VER_FILE_DESCRIPTION_STR            L"Sony PlayStation (1994) Image Viewer, Editor and Creator\0\0"
 #define VER_INTERNAL_NAME_STR               L"ps-image\0\0"
 #define VER_LEGAL_COPYRIGHT_STR             L"2024-2025 Megan Grass\0\0"
 #define VER_LEGAL_TRADEMARKS_STR            L"\0\0"

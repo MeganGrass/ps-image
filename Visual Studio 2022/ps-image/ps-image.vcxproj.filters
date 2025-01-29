@@ -136,6 +136,9 @@
     <ClCompile Include="..\..\mstd-lib\std_text.cpp">
       <Filter>Standard</Filter>
     </ClCompile>
+    <ClCompile Include="Source\app_settings.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Windows\resource.h">

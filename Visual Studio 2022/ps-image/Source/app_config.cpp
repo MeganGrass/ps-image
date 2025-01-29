@@ -70,17 +70,26 @@ void Global_Application::OpenConfig(void)
 					b_Raw4bpp = true;
 					b_Raw8bpp = false;
 					b_Raw16bpp = false;
+					b_Raw24bpp = false;
 					break;
 				case 8:
 					b_Raw4bpp = false;
 					b_Raw8bpp = true;
 					b_Raw16bpp = false;
+					b_Raw24bpp = false;
 					break;
 				case 16:
 				default:
 					b_Raw4bpp = false;
 					b_Raw8bpp = false;
 					b_Raw16bpp = true;
+					b_Raw24bpp = false;
+					break;
+				case 24:
+					b_Raw4bpp = false;
+					b_Raw8bpp = false;
+					b_Raw16bpp = false;
+					b_Raw24bpp = true;
 					break;
 				}
 			}
@@ -100,27 +109,19 @@ void Global_Application::OpenConfig(void)
 			{
 				b_RawExternalPaletteFromTIM = std::stoi(Args[1]);
 			}
-			if (Str.ToUpper(Args[0]) == L"B_RAWIMPORTALLPALETTESFROMTIM")
-			{
-				b_RawImportAllPalettesFromTIM = std::stoi(Args[1]);
-			}
 			if (Str.ToUpper(Args[0]) == L"M_RAWWIDTH")
 			{
 				m_RawWidth = std::stoi(Args[1]);
-				m_RawWidth = std::clamp(m_RawWidth, 1, 1024);
+				AdjustWidthInput(m_RawWidth);
 			}
 			if (Str.ToUpper(Args[0]) == L"M_RAWHEIGHT")
 			{
 				m_RawHeight = std::stoi(Args[1]);
-				m_RawHeight = std::clamp(m_RawHeight, 1, 512);
+				AdjustHeightInput(m_RawHeight);
 			}
 			if (Str.ToUpper(Args[0]) == L"M_RAWPALETTECOUNT")
 			{
 				m_RawPaletteCount = std::stoi(Args[1]);
-			}
-			if (Str.ToUpper(Args[0]) == L"M_RAWPALETTEID")
-			{
-				m_RawPaletteID = std::stoi(Args[1]);
 			}
 			if (Str.ToUpper(Args[0]) == L"M_RAWPIXELPTR")
 			{
@@ -165,14 +166,6 @@ void Global_Application::OpenConfig(void)
 				iTextureFilterType = std::clamp(iTextureFilterType, 0ULL, 3ULL);
 				m_TextureFilter = (D3DTEXTUREFILTERTYPE)iTextureFilterType;
 			}
-			if (Str.ToUpper(Args[0]) == L"B_TRANSPARENCY")
-			{
-				b_Transparency = std::stoi(Args[1]);
-			}
-			if (Str.ToUpper(Args[0]) == L"B_TRANSPARENCYSUPERIMPOSED")
-			{
-				b_TransparencySuperimposed = std::stoi(Args[1]);
-			}
 
 			if (Str.ToUpper(Args[0]) == L"B_VIEWTOOLBAR")
 			{
@@ -207,15 +200,6 @@ void Global_Application::OpenConfig(void)
 				b_ViewVRAMWindow = std::stoi(Args[1]);
 			}
 
-			if (Str.ToUpper(Args[0]) == L"B_IMAGEWINDOWTITLEBAR")
-			{
-				b_ImageWindowTitleBar = std::stoi(Args[1]);
-			}
-			if (Str.ToUpper(Args[0]) == L"B_IMAGEWINDOWBACKGROUND")
-			{
-				b_ImageWindowBackground = std::stoi(Args[1]);
-			}
-
 			if (Str.ToUpper(Args[0]) == L"B_OPENLASTFILEONBOOT")
 			{
 				b_OpenLastFileOnBoot = std::stoi(Args[1]);
@@ -247,16 +231,14 @@ void Global_Application::SaveConfig(void)
 
 	Text->AddLine(L"m_Filename\t\"%ws\"\r", m_Filename.wstring().c_str());
 
-	Text->AddLine(L"b_RawBpp\t%d\r", b_Raw4bpp ? 4 : b_Raw8bpp ? 8 : b_Raw16bpp ? 16 : 0);
+	Text->AddLine(L"b_RawBpp\t%d\r", b_Raw4bpp ? 4 : b_Raw8bpp ? 8 : b_Raw16bpp ? 16 : b_Raw24bpp ? 24 : 16);
 	Text->AddLine(L"b_RawExternalPixels\t%d\r", b_RawExternalPixels);
 	Text->AddLine(L"b_RawExternalPixelsFromTIM\t%d\r", b_RawExternalPixelsFromTIM);
 	Text->AddLine(L"b_RawExternalPalette\t%d\r", b_RawExternalPalette);
 	Text->AddLine(L"b_RawExternalPaletteFromTIM\t%d\r", b_RawExternalPaletteFromTIM);
-	Text->AddLine(L"b_RawImportAllPalettesFromTIM\t%d\r", b_RawImportAllPalettesFromTIM);
 	Text->AddLine(L"m_RawWidth\t%d\r", m_RawWidth);
 	Text->AddLine(L"m_RawHeight\t%d\r", m_RawHeight);
 	Text->AddLine(L"m_RawPaletteCount\t%d\r", m_RawPaletteCount);
-	Text->AddLine(L"m_RawPaletteID\t%d\r", m_RawPaletteID);
 	Text->AddLine(L"m_RawPixelPtr\t0x%llx\r", m_RawPixelPtr);
 	Text->AddLine(L"m_RawPalettePtr\t0x%llx\r", m_RawPalettePtr);
 	Text->AddLine(L"m_RawPixelFilename\t\"%ws\"\r", m_RawPixelFilename.wstring().c_str());
@@ -268,8 +250,6 @@ void Global_Application::SaveConfig(void)
 	Text->AddLine(L"m_ImageZoom\t%f\r", m_ImageZoom);
 	Text->AddLine(L"b_Dithering\t%d\r", b_Dithering);
 	Text->AddLine(L"m_Filtering\t%d\r", m_TextureFilter);
-	Text->AddLine(L"b_Transparency\t%d\r", b_Transparency);
-	Text->AddLine(L"b_TransparencySuperimposed\t%d\r", b_TransparencySuperimposed);
 
 	Text->AddLine(L"b_ViewToolbar\t%d\r", b_ViewToolbar);
 	Text->AddLine(L"b_ViewStatusbar\t%d\r", b_ViewStatusbar);
@@ -279,9 +259,6 @@ void Global_Application::SaveConfig(void)
 	Text->AddLine(L"b_ViewPaletteWindow\t%d\r", b_ViewPaletteWindow);
 	Text->AddLine(L"b_ViewImageOptions\t%d\r", b_ViewImageOptions);
 	Text->AddLine(L"b_ViewVRAMWindow\t%d\r", b_ViewVRAMWindow);
-
-	Text->AddLine(L"b_ImageWindowTitleBar\t%d\r", b_ImageWindowTitleBar);
-	Text->AddLine(L"b_ImageWindowBackground\t%d\r", b_ImageWindowBackground);
 
 	Text->AddLine(L"b_OpenLastFileOnBoot\t%d\r", b_OpenLastFileOnBoot);
 
