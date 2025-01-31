@@ -631,7 +631,7 @@ void Global_Application::Palette(void)
 			SetPalette(m_Palette);
 		}
 
-		ImGui::BeginDisabled(!(Texture().GetClutSize() > 1));
+		ImGui::BeginDisabled(!(Texture().GetClutCount() > 1));
 		{
 			ImGui::PushItemFlag(ImGuiItemFlags_ButtonRepeat, false);
 

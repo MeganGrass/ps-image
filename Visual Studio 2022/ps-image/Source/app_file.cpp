@@ -550,7 +550,7 @@ void Global_Application::AddPaletteFromFile(void)
 	{
 		CoUninitialize();
 
-		std::uint32_t iLastPalette = Texture().GetClutSize();
+		std::uint32_t iLastPalette = Texture().GetClutCount();
 
 		if (Texture().AddPalette(Filename.value()))
 		{

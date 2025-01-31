@@ -17,8 +17,6 @@ static String ImGuiIniFilename = "";
 
 static ImGuiContext* Context = nullptr;
 
-static bool IsDrawing = false;
-
 void Global_Application::About(void) const
 {
 	Standard_String Str;
@@ -279,11 +277,9 @@ int Global_Application::Main(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWST
 
 			std::filesystem::path Source = Str.FormatCStyle(L"%s\\%s", Window->GetCurrentWorkingDir().c_str(), L"icons.png");
 
-			std::filesystem::path Destination = GetToolbarIconFilename();
-
-			if (FS.Exists(Source) && !FS.Exists(Destination))
+			if (FS.Exists(Source) && !FS.Exists(GetToolbarIconFilename()))
 			{
-				std::filesystem::copy_file(Source, Destination, std::filesystem::copy_options::overwrite_existing);
+				std::filesystem::copy_file(Source, GetToolbarIconFilename(), std::filesystem::copy_options::overwrite_existing);
 				std::filesystem::remove(Source);
 			}
 		}
@@ -334,8 +330,8 @@ int Global_Application::Main(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWST
 		io.FontDefault = io.Fonts->Fonts.back();
 	}
 	{
-		int DefaultWidth = 1024 + static_cast<int>(ImGui::GetFrameHeightWithSpacing()) * 2;
-		int DefaultHeight = 512 + static_cast<int>(ImGui::GetFrameHeightWithSpacing()) * 4 + 160;
+		int DefaultWidth = 1024;
+		int DefaultHeight = 720;
 
 		if (b_BootMaximized)
 		{
@@ -374,6 +370,17 @@ int Global_Application::Main(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWST
 		if (b_BootMaximized)
 		{
 			ShowWindow(Window->Get(), SW_SHOWMAXIMIZED);
+
+			RECT Rect = G->Window->GetRect();
+			WINDOWPOS WindowPos{};
+			WindowPos.hwnd = G->Window->Get();
+			WindowPos.hwndInsertAfter = nullptr;
+			WindowPos.x = Rect.left;
+			WindowPos.y = Rect.top;
+			WindowPos.cx = (Rect.right - Rect.left);
+			WindowPos.cy = (Rect.bottom - Rect.top);
+			WindowPos.flags = SWP_NOZORDER | SWP_NOREDRAW | SWP_NOACTIVATE | SWP_NOCOPYBITS | SWP_NOOWNERZORDER | SWP_DEFERERASE | SWP_ASYNCWINDOWPOS;
+			SendMessage(G->Render->Window()->Get(), WM_WINDOWPOSCHANGED, 0, (LPARAM)&WindowPos);
 		}
 
 		if (b_BootFullscreen)

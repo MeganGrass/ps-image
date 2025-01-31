@@ -161,21 +161,5 @@ void Global_Application::AdjustWidthInput(std::uint16_t& Width)
 void Global_Application::AdjustHeightInput(std::uint16_t& Height)
 {
 	std::uint16_t MinHeight = 1;
-	if (b_Raw4bpp || (m_Texture && Texture().GetDepth() == 4))
-	{
-		if (Height % 4)
-		{
-			Height += 4 - (Height % 4);
-		}
-		MinHeight = 4;
-	}
-	else if (b_Raw8bpp || (m_Texture && Texture().GetDepth() == 8))
-	{
-		if (Height % 2)
-		{
-			Height += 2 - (Height % 2);
-		}
-		MinHeight = 2;
-	}
 	Height = std::clamp(Height, MinHeight, uint16_t(512));
 }
