@@ -54,6 +54,37 @@
     <ClCompile Include="..\..\sdk\imgui\imgui_tables.cpp" />
     <ClCompile Include="..\..\sdk\imgui\imgui_widgets.cpp" />
     <ClCompile Include="..\..\sdk\imgui\misc\cpp\imgui_stdlib.cpp" />
+    <ClCompile Include="..\..\sdk\libpng\png.c" />
+    <ClCompile Include="..\..\sdk\libpng\pngerror.c" />
+    <ClCompile Include="..\..\sdk\libpng\pngget.c" />
+    <ClCompile Include="..\..\sdk\libpng\pngmem.c" />
+    <ClCompile Include="..\..\sdk\libpng\pngpread.c" />
+    <ClCompile Include="..\..\sdk\libpng\pngread.c" />
+    <ClCompile Include="..\..\sdk\libpng\pngrio.c" />
+    <ClCompile Include="..\..\sdk\libpng\pngrtran.c" />
+    <ClCompile Include="..\..\sdk\libpng\pngrutil.c" />
+    <ClCompile Include="..\..\sdk\libpng\pngset.c" />
+    <ClCompile Include="..\..\sdk\libpng\pngtest.c" />
+    <ClCompile Include="..\..\sdk\libpng\pngtrans.c" />
+    <ClCompile Include="..\..\sdk\libpng\pngwio.c" />
+    <ClCompile Include="..\..\sdk\libpng\pngwrite.c" />
+    <ClCompile Include="..\..\sdk\libpng\pngwtran.c" />
+    <ClCompile Include="..\..\sdk\libpng\pngwutil.c" />
+    <ClCompile Include="..\..\sdk\zlib\adler32.c" />
+    <ClCompile Include="..\..\sdk\zlib\compress.c" />
+    <ClCompile Include="..\..\sdk\zlib\crc32.c" />
+    <ClCompile Include="..\..\sdk\zlib\deflate.c" />
+    <ClCompile Include="..\..\sdk\zlib\gzclose.c" />
+    <ClCompile Include="..\..\sdk\zlib\gzlib.c" />
+    <ClCompile Include="..\..\sdk\zlib\gzread.c" />
+    <ClCompile Include="..\..\sdk\zlib\gzwrite.c" />
+    <ClCompile Include="..\..\sdk\zlib\infback.c" />
+    <ClCompile Include="..\..\sdk\zlib\inffast.c" />
+    <ClCompile Include="..\..\sdk\zlib\inflate.c" />
+    <ClCompile Include="..\..\sdk\zlib\inftrees.c" />
+    <ClCompile Include="..\..\sdk\zlib\trees.c" />
+    <ClCompile Include="..\..\sdk\zlib\uncompr.c" />
+    <ClCompile Include="..\..\sdk\zlib\zutil.c" />
     <ClCompile Include="..\..\sony-lib\sony_bitstream.cpp" />
     <ClCompile Include="..\..\sony-lib\sony_texture.cpp" />
     <ClCompile Include="Source\app.cpp" />
@@ -94,6 +125,24 @@
     <ClInclude Include="..\..\sdk\imgui\imstb_textedit.h" />
     <ClInclude Include="..\..\sdk\imgui\imstb_truetype.h" />
     <ClInclude Include="..\..\sdk\imgui\misc\cpp\imgui_stdlib.h" />
+    <ClInclude Include="..\..\sdk\libpng\png.h" />
+    <ClInclude Include="..\..\sdk\libpng\pngconf.h" />
+    <ClInclude Include="..\..\sdk\libpng\pngdebug.h" />
+    <ClInclude Include="..\..\sdk\libpng\pnginfo.h" />
+    <ClInclude Include="..\..\sdk\libpng\pnglibconf.h" />
+    <ClInclude Include="..\..\sdk\libpng\pngpriv.h" />
+    <ClInclude Include="..\..\sdk\libpng\pngstruct.h" />
+    <ClInclude Include="..\..\sdk\zlib\crc32.h" />
+    <ClInclude Include="..\..\sdk\zlib\deflate.h" />
+    <ClInclude Include="..\..\sdk\zlib\gzguts.h" />
+    <ClInclude Include="..\..\sdk\zlib\inffast.h" />
+    <ClInclude Include="..\..\sdk\zlib\inffixed.h" />
+    <ClInclude Include="..\..\sdk\zlib\inflate.h" />
+    <ClInclude Include="..\..\sdk\zlib\inftrees.h" />
+    <ClInclude Include="..\..\sdk\zlib\trees.h" />
+    <ClInclude Include="..\..\sdk\zlib\zconf.h" />
+    <ClInclude Include="..\..\sdk\zlib\zlib.h" />
+    <ClInclude Include="..\..\sdk\zlib\zutil.h" />
     <ClInclude Include="..\..\sony-lib\sony_bitstream.h" />
     <ClInclude Include="..\..\sony-lib\sony_bitstream_table.h" />
     <ClInclude Include="..\..\sony-lib\sony_texture.h" />
@@ -111,7 +160,14 @@
     <Xml Include="Windows\manifest.xml" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\..\sdk\libpng\LICENSE" />
+    <None Include="..\..\sdk\libpng\README" />
+    <None Include="..\..\sdk\zlib\LICENSE" />
+    <None Include="..\..\sdk\zlib\README" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="..\..\sdk\imgui\LICENSE.txt" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
@@ -189,16 +245,19 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;MSTD_DEVICE;MSTD_DX9;IMGUI_IMPL_WIN32_DISABLE_GAMEPAD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;MSTD_DEVICE;MSTD_DX9;LIB_JPEG;LIB_PNG;IMGUI_IMPL_WIN32_DISABLE_GAMEPAD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
-      <AdditionalIncludeDirectories>$(SolutionDir)Windows;../../mstd-lib;../../mstd-lib/Windows;../../mstd-lib/DX9;../../sony-lib;../../sdk/imgui;../../sdk/imgui/backends;../../sdk/imgui/misc/cpp;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Windows;../../mstd-lib;../../mstd-lib/Windows;../../mstd-lib/DX9;../../sony-lib;../../sdk/zlib;../../sdk/libjpeg-turbo/src;../../sdk/libpng;../../sdk/imgui;../../sdk/imgui/backends;../../sdk/imgui/misc/cpp;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>
+      </AdditionalDependencies>
+      <AdditionalLibraryDirectories>../../sdk/libjpeg-turbo/bin/Debug/x86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <Manifest>
       <AdditionalManifestFiles>".\\Windows\\manifest.xml" %(AdditionalManifestFiles)</AdditionalManifestFiles>
@@ -222,18 +281,21 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;MSTD_DEVICE;MSTD_DX9;IMGUI_IMPL_WIN32_DISABLE_GAMEPAD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;MSTD_DEVICE;MSTD_DX9;LIB_JPEG;LIB_PNG;IMGUI_IMPL_WIN32_DISABLE_GAMEPAD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
-      <AdditionalIncludeDirectories>$(SolutionDir)Windows;../../mstd-lib;../../mstd-lib/Windows;../../mstd-lib/DX9;../../sony-lib;../../sdk/imgui;../../sdk/imgui/backends;../../sdk/imgui/misc/cpp;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Windows;../../mstd-lib;../../mstd-lib/Windows;../../mstd-lib/DX9;../../sony-lib;../../sdk/zlib;../../sdk/libjpeg-turbo/src;../../sdk/libpng;../../sdk/imgui;../../sdk/imgui/backends;../../sdk/imgui/misc/cpp;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>
+      </AdditionalDependencies>
+      <AdditionalLibraryDirectories>../../sdk/libjpeg-turbo/bin/Release/x86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <Manifest>
       <AdditionalManifestFiles>".\\Windows\\manifest.xml" %(AdditionalManifestFiles)</AdditionalManifestFiles>
@@ -247,16 +309,19 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_WINDOWS;MSTD_DEVICE;MSTD_DX9;IMGUI_IMPL_WIN32_DISABLE_GAMEPAD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;MSTD_DEVICE;MSTD_DX9;LIB_JPEG;LIB_PNG;IMGUI_IMPL_WIN32_DISABLE_GAMEPAD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
-      <AdditionalIncludeDirectories>$(SolutionDir)Windows;../../mstd-lib;../../mstd-lib/Windows;../../mstd-lib/DX9;../../sony-lib;../../sdk/imgui;../../sdk/imgui/backends;../../sdk/imgui/misc/cpp;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Windows;../../mstd-lib;../../mstd-lib/Windows;../../mstd-lib/DX9;../../sony-lib;../../sdk/zlib;../../sdk/libjpeg-turbo/src;../../sdk/libpng;../../sdk/imgui;../../sdk/imgui/backends;../../sdk/imgui/misc/cpp;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>
+      </AdditionalDependencies>
+      <AdditionalLibraryDirectories>../../sdk/libjpeg-turbo/bin/Debug/x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <Manifest>
       <AdditionalManifestFiles>".\\Windows\\manifest.xml" %(AdditionalManifestFiles)</AdditionalManifestFiles>
@@ -276,18 +341,21 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;_WINDOWS;MSTD_DEVICE;MSTD_DX9;IMGUI_IMPL_WIN32_DISABLE_GAMEPAD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;MSTD_DEVICE;MSTD_DX9;LIB_JPEG;LIB_PNG;IMGUI_IMPL_WIN32_DISABLE_GAMEPAD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
-      <AdditionalIncludeDirectories>$(SolutionDir)Windows;../../mstd-lib;../../mstd-lib/Windows;../../mstd-lib/DX9;../../sony-lib;../../sdk/imgui;../../sdk/imgui/backends;../../sdk/imgui/misc/cpp;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Windows;../../mstd-lib;../../mstd-lib/Windows;../../mstd-lib/DX9;../../sony-lib;../../sdk/zlib;../../sdk/libjpeg-turbo/src;../../sdk/libpng;../../sdk/imgui;../../sdk/imgui/backends;../../sdk/imgui/misc/cpp;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>
+      </AdditionalDependencies>
+      <AdditionalLibraryDirectories>../../sdk/libjpeg-turbo/bin/Release/x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <Manifest>
       <AdditionalManifestFiles>".\\Windows\\manifest.xml" %(AdditionalManifestFiles)</AdditionalManifestFiles>

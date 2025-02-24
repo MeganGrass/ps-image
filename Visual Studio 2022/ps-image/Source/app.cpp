@@ -11,7 +11,11 @@ std::unique_ptr<Global_Application> G = std::make_unique<Global_Application>();
 
 std::function<void()> CreateModalFunc = []() {};
 
-std::function<void(std::filesystem::path)> SearchModalFunc = [](std::filesystem::path) {};
+std::function<void()> SearchModalFunc = []() {};
+
+std::function<void(float, bool&)> SearchModalCb = [](float, bool&) {};
+
+std::function<void()> SaveAllFunc = []() {};
 
 static String ImGuiIniFilename = "";
 
@@ -24,15 +28,22 @@ void Global_Application::About(void) const
 	String AboutStr = Str.FormatCStyle("%ws - %ws", VER_INTERNAL_NAME_STR, VER_FILE_DESCRIPTION_STR);
 	AboutStr += Str.FormatCStyle("\r\nv%ws %s %s Megan Grass", VER_PRODUCT_VERSION_STR, __DATE__, __TIME__);
 	AboutStr += Str.FormatCStyle("\r\n\r\n<a href=\"https://github.com/MeganGrass/%ws\">https://github.com/megangrass/%ws</a>", VER_INTERNAL_NAME_STR, VER_INTERNAL_NAME_STR);
+
 	AboutStr += Str.FormatCStyle("\r\n\r\nConfiguration:\r\n<a href=\"%ws\">%ws</a>", GetConfigFilename().wstring().c_str(), GetConfigFilename().wstring().c_str());
 	AboutStr += Str.FormatCStyle("\r\n<a href=\"%ws\">%ws</a>", GetImGuiConfigFilename().wstring().c_str(), GetImGuiConfigFilename().wstring().c_str());
 	AboutStr += Str.FormatCStyle("\r\n<a href=\"%ws\">%ws</a>", GetToolbarIconFilename().wstring().c_str(), GetToolbarIconFilename().wstring().c_str());
-	AboutStr += Str.FormatCStyle("\r\n\r\nImGui:\r\n<a href=\"https://github.com/ocornut/imgui\">https://github.com/ocornut/imgui</a>");
+
+	AboutStr += Str.FormatCStyle("\r\n\r\nimgui: <a href=\"https://github.com/ocornut/imgui\">https://github.com/ocornut/imgui</a>");
+	AboutStr += Str.FormatCStyle("\r\n\r\nlibjpeg-turbo: <a href=\"https://github.com/libjpeg-turbo/libjpeg-turbo\">https://github.com/libjpeg-turbo/libjpeg-turbo</a>");
+	AboutStr += Str.FormatCStyle("\r\n\r\nlibpng: <a href=\"https://github.com/pnggroup/libpng\">https://github.com/pnggroup/libpng</a>");
+	AboutStr += Str.FormatCStyle("\r\n\r\nzlib: <a href=\"https://github.com/madler/zlib\">https://github.com/madler/zlib</a>");
+
 	AboutStr += Str.FormatCStyle("\r\n\r\nBitstream (*.bs) Decoder:\r\n<a href=\"https://github.com/XProger/OpenResident\">https://github.com/XProger/OpenResident</a>");
 	AboutStr += Str.FormatCStyle("\r\n<a href=\"https://psx-spx.consoledev.net/macroblockdecodermdec\">https://psx-spx.consoledev.net/macroblockdecodermdec</a>");
 	AboutStr += Str.FormatCStyle("\r\n<a href=\"https://github.com/grumpycoders/pcsx-redux\">https://github.com/grumpycoders/pcsx-redux</a>");
 	AboutStr += Str.FormatCStyle("\r\n<a href=\"http://jpsxdec.blogspot.com/2011/06/decoding-mpeg-like-bitstreams.html\">http://jpsxdec.blogspot.com/2011/06/decoding-mpeg-like-bitstreams.html</a>");
 	AboutStr += Str.FormatCStyle("\r\n\r\nDither Matrix:\r\n<a href=\"https://psx-spx.consoledev.net/graphicsprocessingunitgpu/#24bit-rgb-to-15bit-rgb-dithering-enabled-in-texpage-attribute\">https://psx-spx.consoledev.net/graphicsprocessingunitgpu/#24bit-rgb-to-15bit-rgb-dithering-enabled-in-texpage-attribute</a>");
+	AboutStr += Str.FormatCStyle("\r\n\r\nCLT and PXL file information:\r\n<a href=\"https://problemkaputt.de/psxspx-cdrom-file-video-texture-image-tim-pxl-clt-sony.htm\">https://problemkaputt.de/psxspx-cdrom-file-video-texture-image-tim-pxl-clt-sony.htm</a>");
 	AboutStr += Str.FormatCStyle("\r\n\r\nPSX.dev\r\n<a href=\"https://discord.com/invite/psx-dev-642647820683444236\">https://discord.com/invite/psx-dev-642647820683444236</a>");
 
 	G->Window->MessageModal(L"About", L"", Str.GetWide(AboutStr));
@@ -96,6 +107,8 @@ void Global_Application::Draw(void)
 		ImGui::PushStyleVar(ImGuiStyleVar_GrabRounding, 7.4f);
 		ImGui::PushStyleVar(ImGuiStyleVar_TabRounding, 7.4f);
 
+		ImGui::PushStyleColor(ImGuiCol_PlotHistogram, ImVec4(0.26f, 0.59f, 0.98f, 1.0f));
+
 		MainMenu();
 		Toolbar();
 		Statusbar();
@@ -105,6 +118,12 @@ void Global_Application::Draw(void)
 		BitstreamSettings();
 		ImageSettings();
 		ImageWindow();
+
+		CreateModalFunc();
+		SearchModalFunc();
+		SaveAllFunc();
+
+		ImGui::PopStyleColor();
 
 		ImGui::PopStyleVar();
 		ImGui::PopStyleVar();
@@ -175,20 +194,17 @@ void Global_Application::Update(void)
 	{
 		if (!ImGui::GetKeyData(ImGuiKey_O)->DownDuration)
 		{
-			Open();
+			TextureIO(ImageIO::All);
 		}
 
 		if (!ImGui::GetKeyData(ImGuiKey_N)->DownDuration)
 		{
-			CreateModalFunc = [this]()
-				{
-					CreateModal();
-				};
+			CreateModalFunc = [this]() { CreateModal(); };
 		}
 
 		if (!ImGui::GetKeyData(ImGuiKey_S)->DownDuration)
 		{
-			SaveAs();
+			TextureIO(ImageIO::SaveAsNew | ImageIO::WriteAll);
 		}
 
 		// CTRL + MOUSEWHEEL
@@ -202,6 +218,14 @@ void Global_Application::Update(void)
 
 void Global_Application::Shutdown(void)
 {
+	if (b_Searching)
+	{
+		SearchModalCb(1.0f, b_Searching = false);
+		SearchModalFunc = []() {};
+
+		do { std::this_thread::sleep_for(std::chrono::milliseconds(10)); } while (b_Searching);
+	}
+
 	if (ToolbarIcons) { ToolbarIcons->Release(); ToolbarIcons = nullptr; }
 
 	Render->Shutdown();
@@ -238,7 +262,7 @@ void Global_Application::DragAndDrop(StrVecW Files)
 		}
 	}*/
 
-	if (!Files.empty()) { Open(Files[NULL]); }
+	if (!Files.empty()) { TextureIO(Files[0], ImageIO::All); }
 
 	Window->ClearDroppedFiles();
 }
@@ -442,19 +466,19 @@ int Global_Application::Main(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWST
 		ImGui_ImplDX9_Init(Render->Device());
 	}
 
-	if ((b_OpenLastFileOnBoot) && (!m_Filename.empty()) && (m_Filename != L"untitled.tim"))
+	if (b_OpenLastFileOnBoot && !m_Filename.empty() && (m_Filename != L"untitled.tim"))
 	{
-		Open(m_Filename);
+		TextureIO(m_Filename, ImageIO::All);
 	}
+
+	Standard_Thread_Pool ThreadPool;
+	ThreadPool.ThreadPoolInit(1);
 
 	MSG msg{};
 	msg.message = NULL;
 	msg.hwnd = Window->Get();
 
 	bool b_Active = true;
-
-	Standard_Thread_Pool ThreadPool;
-	ThreadPool.ThreadPoolInit(1);
 	
 	while (b_Active)
 	{

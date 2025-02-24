@@ -27,79 +27,82 @@ void Global_Application::MainMenu(void)
 		{
 			if (ImGui::MenuItem("Open##FileMenu", "CTRL+O"))
 			{
-				Open();
+				TextureIO(ImageIO::All);
 			}
 			ImGui::Separator();
 			if (ImGui::MenuItem("Create##FileMenu", "CTRL+N"))
 			{
-				CreateModalFunc = [this]()
-					{
-						CreateModal();
-					};
+				CreateModalFunc = [&]() { CreateModal(); };
 			}
 			ImGui::Separator();
 			if (ImGui::MenuItem("Save As##FileMenu", "CTRL+S", nullptr, (b_MenuPixelEnabled || b_MenuPaletteEnabled)))
 			{
-				SaveAs();
+				TextureIO(ImageIO::SaveAsNew | ImageIO::WriteAll);
+			}
+			if (ImGui::BeginMenu("Save All As", m_Files.size() > 1 ? true : false))
+			{
+				if (ImGui::MenuItem("TIM##FileMenuSaveAs"))
+				{
+					TextureIO(ImageIO::SaveMultiNew | ImageIO::All, NULL, m_Palette, ImageType::TIM);
+				}
+				if (ImGui::MenuItem("CLT##FileMenuSaveAs"))
+				{
+					TextureIO(ImageIO::SaveMultiNew | ImageIO::All, NULL, m_Palette, ImageType::CLT);
+				}
+				if (ImGui::MenuItem("PXL##FileMenuSaveAs"))
+				{
+					TextureIO(ImageIO::SaveMultiNew | ImageIO::All, NULL, m_Palette, ImageType::PXL);
+				}
+				if (ImGui::MenuItem("BMP##FileMenuSaveAs"))
+				{
+					TextureIO(ImageIO::SaveMultiNew | ImageIO::All, NULL, m_Palette, ImageType::BMP);
+				}
+				if (ImGui::MenuItem("PAL##FileMenuSaveAs"))
+				{
+					TextureIO(ImageIO::SaveMultiNew | ImageIO::All, NULL, m_Palette, ImageType::PAL);
+				}
+				if (ImGui::MenuItem("PNG##FileMenuSaveAs"))
+				{
+					TextureIO(ImageIO::SaveMultiNew | ImageIO::All, NULL, m_Palette, ImageType::PNG);
+				}
+				if (ImGui::MenuItem("JPG##FileMenuSaveAs"))
+				{
+					TextureIO(ImageIO::SaveMultiNew | ImageIO::All, NULL, m_Palette, ImageType::JPG);
+				}
+				ImGui::EndMenu();
 			}
 			ImGui::Separator();
-			if (ImGui::BeginMenu("Delete", m_Texture ? true : false))
+			if (ImGui::BeginMenu("Delete", m_Texture && m_Texture->IsValid()))
 			{
-				if (ImGui::MenuItem("Palette (Current)##FileMenuDelete", NULL, nullptr, b_MenuPaletteEnabled))
+				if (ImGui::MenuItem("Palettes##FileMenuDelete", NULL, nullptr, b_MenuPaletteEnabled))
 				{
-					DeletePalette(m_Palette);
-				}
-
-				if (ImGui::MenuItem("Palette (All)##FileMenuDelete", NULL, nullptr, b_MenuPaletteEnabled))
-				{
-					DeleteAllPalettes();
+					DeletePalette(m_Palette, true);
 				}
 
 				ImGui::Separator();
 
 				if (ImGui::MenuItem("Pixels##FileMenuDelete", NULL, nullptr, b_MenuPixelEnabled))
 				{
-					DeleteAllPixels();
+					DeletePixels();
 				}
 
 				ImGui::EndMenu();
-			}
-			ImGui::Separator();
-			if (ImGui::MenuItem("Export All##FileMenu", NULL, nullptr, m_Files.size() > 1 ? true : false))
-			{
-				ExportAllTextures();
-			}
-			if (ImGui::MenuItem("Export All As Bitmap##FileMenu", NULL, nullptr, m_Files.size() > 1 ? true : false))
-			{
-				ExportAllTexturesToBitmap();
 			}
 			ImGui::Separator();
 			if (ImGui::BeginMenu("Export", (b_MenuPixelEnabled || b_MenuPaletteEnabled)))
 			{
 				if (ImGui::MenuItem("Palette (Current)##FileMenuExport", NULL, nullptr, b_MenuPaletteEnabled))
 				{
-					ExportPalette(m_Palette);
+					TextureIO(ImageIO::SaveAsNew | ImageIO::Palette | ImageIO::PaletteSingle, NULL, m_Palette);
 				}
 				if (ImGui::MenuItem("Palette (All)##FileMenuExport", NULL, nullptr, b_MenuPaletteEnabled))
 				{
-					ExportPalette();
-				}
-				if (ImGui::MenuItem("Palette As PAL##FileMenuExport", NULL, nullptr, b_MenuPaletteEnabled))
-				{
-					ExportPaletteToPAL();
-				}
-				if (ImGui::MenuItem("Palette As TIM##FileMenuExport", NULL, nullptr, b_MenuPaletteEnabled))
-				{
-					ExportPaletteToTIM();
+					TextureIO(ImageIO::SaveAsNew | ImageIO::Palette);
 				}
 				ImGui::Separator();
 				if (ImGui::MenuItem("Pixels##FileMenuExport", NULL, nullptr, b_MenuPixelEnabled))
 				{
-					ExportPixels();
-				}
-				if (ImGui::MenuItem("Pixels As TIM##FileMenuExport", NULL, nullptr, b_MenuPixelEnabled))
-				{
-					ExportPixelsToTIM();
+					TextureIO(ImageIO::SaveAsNew | ImageIO::Pixel);
 				}
 				ImGui::EndMenu();
 			}
@@ -107,28 +110,16 @@ void Global_Application::MainMenu(void)
 			{
 				if (ImGui::MenuItem("Palette (Current)##FileMenuImport", NULL, nullptr, m_Texture ? true : false))
 				{
-					ImportPalette(m_Palette);
+					TextureIO(ImageIO::ImportPalette | ImageIO::PaletteSingle, NULL, m_Palette);
 				}
 				if (ImGui::MenuItem("Palette (All)##FileMenuExport", NULL, nullptr, m_Texture ? true : false))
 				{
-					ImportPalette();
-				}
-				if (ImGui::MenuItem("Palette From PAL##FileMenuExport", NULL, nullptr, m_Texture ? true : false))
-				{
-					ImportPaletteFromPAL();
-				}
-				if (ImGui::MenuItem("Palette From TIM##FileMenuImport", NULL, nullptr, m_Texture ? true : false))
-				{
-					ImportPaletteFromTIM();
+					TextureIO(ImageIO::ImportPalette);
 				}
 				ImGui::Separator();
-				if (ImGui::MenuItem("Pixels##FileMenuImport", NULL, nullptr, (b_MenuPixelEnabled || b_MenuPaletteEnabled)))
+				if (ImGui::MenuItem("Pixels##FileMenuImport", NULL, nullptr, m_Texture ? true : false))
 				{
-					ImportPixels();
-				}
-				if (ImGui::MenuItem("Pixels From TIM##FileMenuImport", NULL, nullptr, m_Texture ? true : false))
-				{
-					ImportPixelsFromTIM();
+					TextureIO(ImageIO::ImportPixel);
 				}
 				ImGui::EndMenu();
 			}
@@ -197,8 +188,6 @@ void Global_Application::MainMenu(void)
 
 		ImGui::EndMainMenuBar();
 	}
-
-	CreateModalFunc();
 }
 
 void Global_Application::Toolbar(void)
@@ -234,7 +223,7 @@ void Global_Application::Toolbar(void)
 		ImVec2 uv1 = ImVec2(64.0f / 320.0f, 64.0f / 64.0f);
 		if (ImGui::ImageButton("Open##ToolbarOpen", (ImTextureID)(intptr_t)ToolbarIcons, ImVec2(64, 64), uv0, uv1))
 		{
-			Open();
+			TextureIO(ImageIO::All);
 		}
 		TooltipOnHover("Open File");
 
@@ -243,10 +232,7 @@ void Global_Application::Toolbar(void)
 		uv1 = ImVec2(128.0f / 320.0f, 64.0f / 64.0f);
 		if (ImGui::ImageButton("New##ToolbarNew", (ImTextureID)(intptr_t)ToolbarIcons, ImVec2(64, 64), uv0, uv1))
 		{
-			CreateModalFunc = [this]()
-				{
-					CreateModal();
-				};
+			CreateModalFunc = [this]() { CreateModal(); };
 		}
 		TooltipOnHover("Create New");
 
@@ -264,7 +250,7 @@ void Global_Application::Toolbar(void)
 		uv1 = ImVec2(256.0f / 320.0f, 64.0f / 64.0f);
 		if (ImGui::ImageButton("Save As##ToolbarSave", (ImTextureID)(intptr_t)ToolbarIcons, ImVec2(64, 64), uv0, uv1))
 		{
-			SaveAs();
+			TextureIO(ImageIO::SaveAsNew | ImageIO::WriteAll);
 		}
 		TooltipOnHover("Save As");
 
@@ -287,13 +273,20 @@ void Global_Application::Statusbar(void)
 	{
 		if (ImGui::BeginMenuBar())
 		{
-			if (Render->NormalState() && DXTexture)
+			if (b_Searching)
 			{
-				ImGui::Text(m_Filename.filename().string().c_str());
-
-				ImGui::Indent(ImGui::CalcTextSize(m_Filename.filename().string().c_str()).x + ImGui::GetFontSize() / 2);
-
-				ImGui::Text(Str.FormatCStyle("|  %d x %d  |  %dbpp", m_LastKnownWidth, m_LastKnownHeight, m_LastKnownBitsPerPixel).c_str());
+				ImGui::Text("Searching for textures...");
+			}
+			else if (Render->NormalState() && DXTexture)
+			{
+				if (b_ImageOnDisk)
+				{
+					ImGui::Text(Str.FormatCStyle("%ws  |  %d x %d  |  %dbpp", m_Filename.filename().wstring().c_str(), m_LastKnownWidth, m_LastKnownHeight, m_LastKnownBitsPerPixel).c_str());
+				}
+				else
+				{
+					ImGui::Text(Str.FormatCStyle("*%ws  |  %d x %d  |  %dbpp", m_Filename.filename().wstring().c_str(), m_LastKnownWidth, m_LastKnownHeight, m_LastKnownBitsPerPixel).c_str());
+				}
 
 				if (m_Texture)
 				{
@@ -307,15 +300,15 @@ void Global_Application::Statusbar(void)
 						ImGui::SetCursorPosX(ImGui::GetWindowWidth() - ImGui::CalcTextSize("Warning: palette data is empty").x - ImGui::GetFontSize() / 3);
 						ImGui::Text("Warning: palette data is empty");
 					}
-					else if (Texture().GetDepth() < 16 && Texture().GetPixels().empty())
+					else if (Texture().GetPixels().empty())
 					{
 						ImGui::SetCursorPosX(ImGui::GetWindowWidth() - ImGui::CalcTextSize("Warning: pixel data is empty").x - ImGui::GetFontSize() / 3);
 						ImGui::Text("Warning: pixel data is empty");
 					}
 					else if (!Texture().GetPalette().empty())
 					{
-						ImGui::SetCursorPosX(ImGui::GetWindowWidth() - ImGui::CalcTextSize(Str.FormatCStyle("palette: %d / %d", m_Palette, Texture().GetClutMax()).c_str()).x - ImGui::GetFontSize() / 3);
-						ImGui::Text(Str.FormatCStyle("palette: %d / %d", m_Palette, Texture().GetClutMax()).c_str());
+						ImGui::SetCursorPosX(ImGui::GetWindowWidth() - ImGui::CalcTextSize(Str.FormatCStyle("palette: %d / %d", m_Palette, Texture().GetPaletteCount()).c_str()).x - ImGui::GetFontSize() / 3);
+						ImGui::Text(Str.FormatCStyle("palette: %d / %d", m_Palette, Texture().GetPaletteCount()).c_str());
 					}
 				}
 			}
@@ -464,129 +457,123 @@ void Global_Application::FileBrowser(void)
 				ImGui::PushID(Column);
 
 				ImGui::TableSetColumnIndex(0);
-				if (ImGui::Selectable(Str.FormatCStyle("0x%llX##FileOffset%d", m_Files[Row].first, Row).c_str(), m_SelectedFile == Row, ImGuiSelectableFlags_SpanAllColumns))
+				if (ImGui::Selectable(Str.FormatCStyle("0x%llX##FileOffset%d", m_Files.empty() ? 0 : File()[Row].first, Row).c_str(), m_SelectedFile == Row, ImGuiSelectableFlags_SpanAllColumns))
 				{
-					m_SelectedFile = Row;
+					m_SelectedFile = m_PostSearchSelectedFile = Row;
 				}
 
-				if (ImGui::BeginPopupContextItem(Str.FormatCStyle("0x%llX##FileOffset%d", m_Files[Row].first, Row).c_str()))
+				if (ImGui::BeginPopupContextItem(Str.FormatCStyle("0x%llX##FileOffset%d", m_Files.empty() ? 0 : File()[Row].first, Row).c_str()))
 				{
+					if (m_Files.empty()) { ImGui::EndPopup(); ImGui::PopID(); break; }
+
 					if (m_SelectedFile != Row) { SetTexture(m_SelectedFile = Row); }
 
 					if (m_Texture)
 					{
+						ImVec2 ItemSize = ImVec2(ImGui::CalcTextSize("__FILE__##FileWindow").x, 0);
+
 						ImGui::Text(Texture().About().c_str());
+
+						std::uint16_t PaletteX = Texture().GetPaletteX();
+						std::uint16_t PaletteY = Texture().GetPaletteY();
+						std::uint16_t DataX = Texture().GetPixelX();
+						std::uint16_t DataY = Texture().GetPixelY();
 
 						ImGui::BeginDisabled(Texture().GetPalette().empty());
 						{
-							ImGui::SetNextItemWidth(ImGui::CalcTextSize("VRAM X (Pixels)##FileWindow").x);
-							if (ImGui::InputScalar("VRAM X (CLUT)##FileWindow", ImGuiDataType_U16, &Texture().ClutX()))
+							ImGui::SetNextItemWidth(ImGui::CalcTextSize("__FILE__").x);
+							if (ImGui::InputScalar("CLUT X##FileWindow", ImGuiDataType_U16, &PaletteX))
 							{
-								Texture().ClutX() = std::clamp(Texture().ClutX(), std::uint16_t(0), std::uint16_t(1024 - Texture().GetPaletteWidth()));
+								Texture().SetPaletteX(std::clamp(PaletteX, std::uint16_t(0), std::uint16_t(1024 - Texture().GetPaletteWidth())));
 							}
-							ScrollOnHover(&Texture().ClutX(), ImGuiDataType_U16, 16, 0, std::uint16_t(1024 - Texture().GetPaletteWidth()));
+							ScrollOnHover(&PaletteX, ImGuiDataType_U16, 16, 0, std::uint16_t(1024 - Texture().GetPaletteWidth()));
+							if (Texture().GetPaletteX() != PaletteX) { Texture().SetPaletteX(PaletteX); }
 							TooltipOnHover("Value must be in decimal format");
 							Tooltip(Str.FormatCStyle("Horizontal position of palette data in VRAM\r\n\r\nMouse scrollwheel can be used while hovering"));
+						}
+						ImGui::EndDisabled();
 
-							ImGui::SetNextItemWidth(ImGui::CalcTextSize("VRAM Y (Pixels)##FileWindow").x);
-							if (ImGui::InputScalar("VRAM Y (CLUT)##FileWindow", ImGuiDataType_U16, &Texture().ClutY()))
+						ImGui::SameLine();
+
+						ImGui::BeginDisabled(Texture().GetPixels().empty());
+						{
+							ItemSize.y = ImGui::GetCursorPosY();
+							ItemSize.x = ImGui::GetCursorPosX() + ImGui::GetCursorPosX() / 3;
+							ImGui::SetCursorPos(ItemSize);
+							ItemSize = ImVec2(ImGui::CalcTextSize("__FILE__##FileWindow").x, 0);
+
+							ImGui::SetNextItemWidth(ImGui::CalcTextSize("__FILE__").x);
+							if (ImGui::InputScalar("Pixel X##FileWindow", ImGuiDataType_U16, &DataX))
 							{
-								Texture().ClutY() = std::clamp(Texture().ClutY(), std::uint16_t(0), std::uint16_t(512 - Texture().GetPaletteHeight()));
+								Texture().SetPixelX(std::clamp(DataX, std::uint16_t(0), std::uint16_t(1024 - Texture().GetPaletteWidth())));
 							}
-							ScrollOnHover(&Texture().ClutY(), ImGuiDataType_U16, 16, 0, std::uint16_t(512 - Texture().GetPaletteHeight()));
+							ScrollOnHover(&DataX, ImGuiDataType_U16, 16, 0, std::uint16_t(1024 - Texture().GetPaletteWidth()));
+							if (Texture().GetPixelX() != DataX) { Texture().SetPixelX(DataX); }
+							TooltipOnHover("Value must be in decimal format");
+							Tooltip(Str.FormatCStyle("Horizontal position of pixel data in VRAM\r\n\r\nMouse scrollwheel can be used while hovering"));
+						}
+						ImGui::EndDisabled();
+
+						ImGui::BeginDisabled(Texture().GetPalette().empty());
+						{
+							ImGui::SetNextItemWidth(ImGui::CalcTextSize("__FILE__").x);
+							if (ImGui::InputScalar("CLUT Y##FileWindow", ImGuiDataType_U16, &PaletteY))
+							{
+								Texture().SetPaletteY(std::clamp(PaletteY, std::uint16_t(0), std::uint16_t(1024 - Texture().GetPaletteWidth())));
+							}
+							ScrollOnHover(&PaletteY, ImGuiDataType_U16, 16, 0, std::uint16_t(1024 - Texture().GetPaletteWidth()));
+							if (Texture().GetPaletteY() != PaletteY) { Texture().SetPaletteY(PaletteY); }
 							TooltipOnHover("Value must be in decimal format");
 							Tooltip(Str.FormatCStyle("Vertical position of palette data in VRAM\r\n\r\nMouse scrollwheel can be used while hovering"));
 						}
 						ImGui::EndDisabled();
 
+						ImGui::SameLine();
+
 						ImGui::BeginDisabled(Texture().GetPixels().empty());
 						{
-							ImGui::SetNextItemWidth(ImGui::CalcTextSize("VRAM X (Pixels)##FileWindow").x);
-							if (ImGui::InputScalar("VRAM X (Pixels)##FileWindow", ImGuiDataType_U16, &Texture().DataX()))
-							{
-								Texture().DataX() = std::clamp(Texture().DataX(), std::uint16_t(0), std::uint16_t(1024 - Texture().GetWidth()));
-							}
-							ScrollOnHover(&Texture().DataX(), ImGuiDataType_U16, 16, 0, std::uint16_t(1024 - Texture().GetWidth()));
-							TooltipOnHover("Value must be in decimal format");
-							Tooltip(Str.FormatCStyle("Horizontal position of pixel data in VRAM\r\n\r\nMouse scrollwheel can be used while hovering"));
+							ItemSize.y = ImGui::GetCursorPosY();
+							ItemSize.x = ImGui::GetCursorPosX() + ImGui::GetCursorPosX() / 3;
+							ImGui::SetCursorPos(ItemSize);
+							ItemSize = ImVec2(ImGui::CalcTextSize("__FILE__##FileWindow").x, 0);
 
-							ImGui::SetNextItemWidth(ImGui::CalcTextSize("VRAM Y (Pixels)##FileWindow").x);
-							if (ImGui::InputScalar("VRAM Y (Pixels)##FileWindow", ImGuiDataType_U16, &Texture().DataY()))
+							ImGui::SetNextItemWidth(ImGui::CalcTextSize("__FILE__").x);
+							if (ImGui::InputScalar("Pixel Y##FileWindow", ImGuiDataType_U16, &DataY))
 							{
-								Texture().DataY() = std::clamp(Texture().DataY(), std::uint16_t(0), std::uint16_t(512 - Texture().GetHeight()));
+								Texture().SetPixelY(std::clamp(DataY, std::uint16_t(0), std::uint16_t(1024 - Texture().GetPaletteWidth())));
 							}
-							ScrollOnHover(&Texture().DataY(), ImGuiDataType_U16, 16, 0, std::uint16_t(512 - Texture().GetHeight()));
+							ScrollOnHover(&DataY, ImGuiDataType_U16, 16, 0, std::uint16_t(1024 - Texture().GetPaletteWidth()));
+							if (Texture().GetPixelY() != DataY) { Texture().SetPixelY(DataY); }
 							TooltipOnHover("Value must be in decimal format");
 							Tooltip(Str.FormatCStyle("Vertical position of pixel data in VRAM\r\n\r\nMouse scrollwheel can be used while hovering"));
 						}
 						ImGui::EndDisabled();
 
-						ImGui::BeginDisabled(Texture().GetPixels().empty() && Texture().GetPalette().empty());
-						if (ImGui::Button("Export##FileWindow", ImVec2(ImGui::CalcTextSize("Save BMP##FileWindow").x, 0)))
+						if (ImGui::Button("Save As##FileWindow", ItemSize))
 						{
-							Export(m_SelectedFile);
+							TextureIO(ImageIO::SaveAsNew | ImageIO::WriteAll);
 						}
-						TooltipOnHover("Export this PlayStation Texture Image");
-						ImGui::EndDisabled();
+						TooltipOnHover("Export this PlayStation Texture Image as file type\r\n\r\nRaw data will be output when file type is unknown");
 
 						ImGui::SameLine();
 
-						if (ImGui::Button("Import##FileWindow", ImVec2(ImGui::CalcTextSize("Save BMP##FileWindow").x, 0)))
+						if (ImGui::Button("Import##FileWindow", ItemSize))
 						{
-							Import(m_SelectedFile);
+							TextureIO(ImageIO::IO | ImageIO::All);
+							ImGui::EndPopup();
+							ImGui::PopID();
+							break;
 						}
-						TooltipOnHover(Str.FormatCStyle("Replace this PlayStation Texture Image\r\n\r\nData will be written to \"%ws\" beginning at offset 0x%llx",
-							m_Filename.filename().wstring().c_str(),
-							m_Files[m_SelectedFile].first));
-
-						ImGui::BeginDisabled(Texture().GetPixels().empty());
-						if (ImGui::Button("Export RAW##FileWindow", ImVec2(ImGui::CalcTextSize("Save BMP##FileWindow").x, 0)))
-						{
-							ExportPixels();
-						}
-						TooltipOnHover("Export pixel data to raw binary file");
-						ImGui::EndDisabled();
-
-						ImGui::SameLine();
-
-						ImGui::BeginDisabled(Texture().GetPixels().empty());
-						if (ImGui::Button("Import RAW##FileWindow", ImVec2(ImGui::CalcTextSize("Save BMP##FileWindow").x, 0)))
-						{
-							ImportPixels();
-						}
-						TooltipOnHover("Import pixel data from raw binary file");
-						ImGui::EndDisabled();
-
-						ImGui::BeginDisabled(Texture().GetPixels().empty());
-						if (ImGui::Button("Export TIM##FileWindow", ImVec2(ImGui::CalcTextSize("Save BMP##FileWindow").x, 0)))
-						{
-							ExportPixelsToTIM();
-						}
-						TooltipOnHover("Export pixel data to PlayStation Texture Image\r\n\r\nPalette is ignored on export");
-						ImGui::EndDisabled();
-
-						ImGui::SameLine();
-
-						if (ImGui::Button("Import TIM##FileWindow", ImVec2(ImGui::CalcTextSize("Save BMP##FileWindow").x, 0)))
-						{
-							ImportPixelsFromTIM();
-						}
-						TooltipOnHover("Import pixel data from PlayStation Texture Image\r\n\r\nPalette from PlayStation Texture Image is ignored on import");
-
-						ImGui::BeginDisabled(Texture().GetPixels().empty());
-						if (ImGui::Button("Save As Bitmap##FileWindow", ImVec2(ImGui::CalcTextSize("Save BMP##FileWindow").x, 0)))
-						{
-							SaveAsBitmap(m_SelectedFile);
-						}
-						TooltipOnHover("Export this PlayStation Texture Image to a Bitmap file");
-						ImGui::EndDisabled();
+						TooltipOnHover(Str.FormatCStyle("Replace this PlayStation Texture Image (*.TIM)\r\n\r\nNew TIM data will be written to \"%ws\" at offset 0x%llx",
+							m_Filename.filename().wstring().c_str(), File()[m_SelectedFile].first));
 					}
 
 					ImGui::EndPopup();
 				}
 
 				ImGui::TableSetColumnIndex(1);
-				ImGui::Text(Str.FormatCStyle("0x%llX", m_Files[Row].second).c_str());
+				Row = File().empty() ? 0 : std::clamp(Row, (std::size_t)0, File().size() - 1);
+				m_Files.empty() ? ImGui::Text(" ") : ImGui::Text(Str.FormatCStyle("0x%llX", File()[Row].second).c_str());
 
 				ImGui::PopID();
 			}
@@ -594,7 +581,7 @@ void Global_Application::FileBrowser(void)
 
 		if (OldSelectedFile != m_SelectedFile)
 		{
-			SetTexture(m_SelectedFile);
+			if (!m_Filename.empty()) { SetTexture(m_SelectedFile); }
 		}
 
 		ImGui::EndTable();
@@ -611,27 +598,36 @@ void Global_Application::Palette(void)
 
 	if (!m_Texture) { return; }
 
-	std::uint16_t nColor = Texture().GetClutColorMax();
+	ImVec2 ItemSize = ImVec2(ImGui::CalcTextSize("Width##CreateModal").x, 0);
+
+	std::uint16_t nColor = Texture().GetPaletteColorMax();
 
 	ImGui::Begin("Palette##PaletteWindow", &b_ViewPaletteWindow, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoResize);
 
 	ImGui::BeginDisabled(Texture().GetPalette().empty());
 	{
-		std::uint32_t OldPalette = std::clamp(m_Palette, uint16_t(0), Texture().GetClutMax());
+		std::uint32_t OldPalette = std::clamp(m_Palette, (uint16_t)0, Texture().GetPaletteMaxIndex());
+
 		float SliderIntWidth = ImGui::GetContentRegionAvail().x - ImGui::CalcTextSize("  ID##PaletteWindow").x / 3 - ImGui::GetStyle().ItemInnerSpacing.x * 2;
+
 		ImGui::SetNextItemWidth(SliderIntWidth);
-		if (ImGui::SliderInt("  ID##PaletteWindow", (int*)&m_Palette, 0, Texture().GetClutMax()))
+
+		uint16_t min = 0;
+		uint16_t max = Texture().GetPaletteMaxIndex();
+		if (ImGui::SliderScalar("  ID##PaletteWindow", ImGuiDataType_U16, &m_Palette, &min, &max))
 		{
-			m_Palette = std::clamp(m_Palette, uint16_t(0), Texture().GetClutMax());
+			m_Palette = std::clamp(m_Palette, (uint16_t)0, Texture().GetPaletteMaxIndex());
 		}
-		ScrollOnHover(&m_Palette, ImGuiDataType_U32, 1, 0, Texture().GetClutMax());
+
+		ScrollOnHover(&m_Palette, ImGuiDataType_U16, 1, 0, Texture().GetPaletteMaxIndex());
 		Tooltip("Active Color Lookup Table\r\n\r\nMousewheel (while hovering) and Left/Right arrow keys can also be used");
+
 		if (OldPalette != m_Palette)
 		{
 			SetPalette(m_Palette);
 		}
 
-		ImGui::BeginDisabled(!(Texture().GetClutCount() > 1));
+		ImGui::BeginDisabled(!(Texture().GetPaletteCount() > 1));
 		{
 			ImGui::PushItemFlag(ImGuiItemFlags_ButtonRepeat, false);
 
@@ -639,7 +635,7 @@ void Global_Application::Palette(void)
 			{
 				MovePalette(m_Palette, ImGuiDir_Left);
 			}
-			TooltipOnHover(Str.FormatCStyle("Move the currently selected Color Lookup Table (%d) to the previous index (%d)", m_Palette, std::clamp(uint16_t(m_Palette - 1), uint16_t(0), Texture().GetClutMax())));
+			TooltipOnHover(Str.FormatCStyle("Move the currently selected Color Lookup Table (%d) to the previous index (%d)", m_Palette, std::clamp(uint16_t(m_Palette - 1), uint16_t(0), Texture().GetPaletteMaxIndex())));
 
 			ImGui::SameLine();
 
@@ -647,7 +643,7 @@ void Global_Application::Palette(void)
 			{
 				MovePalette(m_Palette, ImGuiDir_Right);
 			}
-			TooltipOnHover(Str.FormatCStyle("Move the currently selected Color Lookup Table (%d) to the next index (%d)", m_Palette, std::clamp(uint16_t(m_Palette + 1), uint16_t(0), Texture().GetClutMax())));
+			TooltipOnHover(Str.FormatCStyle("Move the currently selected Color Lookup Table (%d) to the next index (%d)", m_Palette, std::clamp(uint16_t(m_Palette + 1), uint16_t(0), Texture().GetPaletteMaxIndex())));
 
 			ImGui::SameLine();
 			ImGui::Text("Move");
@@ -659,7 +655,7 @@ void Global_Application::Palette(void)
 	}
 	ImGui::EndDisabled();
 
-	if (Texture().GetPalette().empty())
+	if (m_Texture->GetPalette().empty())
 	{
 		m_Palette = 0;
 	}
@@ -688,7 +684,7 @@ void Global_Application::Palette(void)
 	{
 		AddPalette();
 	}
-	TooltipOnHover(Str.FormatCStyle("Append a new palette after the max (%d)", Texture().GetClutMax()));
+	TooltipOnHover(Str.FormatCStyle("Append a new palette after the max (%d)", Texture().GetPaletteMaxIndex()));
 
 	ImGui::SameLine();
 
@@ -703,7 +699,7 @@ void Global_Application::Palette(void)
 	ImGui::BeginDisabled(Texture().GetPalette().empty());
 	if (ImGui::Button("Delete##PaletteWindow"))
 	{
-		DeletePalette(m_Palette);
+		DeletePalette(m_Palette, false);
 	}
 	TooltipOnHover(Str.FormatCStyle("Delete the currently selected palette (%d)", m_Palette));
 	ImGui::EndDisabled();
@@ -712,63 +708,45 @@ void Global_Application::Palette(void)
 
 	if (ImGui::Button("Add File##PaletteWindow"))
 	{
-		AddPaletteFromFile();
+		TextureIO(ImageIO::ImportPalette | ImageIO::PaletteAdd);
 	}
-	TooltipOnHover(Str.FormatCStyle("Append an existing palette after the max (%d)", Texture().GetClutMax()));
+	TooltipOnHover(Str.FormatCStyle("Append an existing palette after the max (%d)", Texture().GetPaletteMaxIndex()));
 
 	ImGui::BeginDisabled(Texture().GetPalette().empty());
-	if (ImGui::Button("Export (Current)##PaletteWindow", ImVec2(ImGui::CalcTextSize("Width##CreateModal").x, 0)))
+	if (ImGui::Button("Save As##PaletteWindow", ItemSize))
 	{
-		ExportPalette(m_Palette);
+		TextureIO(ImageIO::SaveAsNew | ImageIO::Palette);
 	}
-	TooltipOnHover(Str.FormatCStyle("Export the currently selected palette (%d) to raw file data", m_Palette));
+	TooltipOnHover(Str.FormatCStyle("Export all palettes to file\r\n\r\nRaw data will be output when file type is unknown", m_Palette));
 	ImGui::EndDisabled();
 
 	ImGui::SameLine();
 
-	if (ImGui::Button("Import (Current)##PaletteWindow", ImVec2(ImGui::CalcTextSize("Width##CreateModal").x, 0)))
+	if (ImGui::Button("Import##PaletteWindow", ItemSize))
 	{
-		ImportPalette(m_Palette);
+		TextureIO(ImageIO::ImportPalette);
 	}
-	TooltipOnHover(Str.FormatCStyle("Replace the currently selected palette (%d) with raw file data", m_Palette));
+	TooltipOnHover(Str.FormatCStyle("Replace all palettes from file\r\n\r\nData will be interpreted as raw binary when file type is unknown", m_Palette));
 
 	ImGui::BeginDisabled(Texture().GetPalette().empty());
-	if (ImGui::Button("Export (All)##PaletteWindow", ImVec2(ImGui::CalcTextSize("Width##CreateModal").x, 0)))
+	if (ImGui::Button("Export (Current)##PaletteWindow", ItemSize))
 	{
-		ExportPalette();
+		//TextureIO(ImageIO::WriteRawPalette | ImageIO::PaletteSingle | ImageIO::New, NULL, m_Palette);
+		TextureIO(ImageIO::SaveAsNew | ImageIO::Palette | ImageIO::PaletteSingle, NULL, m_Palette);
 	}
-	TooltipOnHover(Str.FormatCStyle("Export all palettes to raw file data"));
+	TooltipOnHover(Str.FormatCStyle("Export palette (%d) to file\r\n\r\nRaw data will be output when file type is unknown", m_Palette));
 	ImGui::EndDisabled();
 
 	ImGui::SameLine();
 
-	if (ImGui::Button("Import (All)##PaletteWindow", ImVec2(ImGui::CalcTextSize("Width##CreateModal").x, 0)))
+	if (ImGui::Button("Import (Current)##PaletteWindow", ItemSize))
 	{
-		ImportPalette();
-		ImGui::End();
-		return;
+		//TextureIO(ImageIO::ReadRawPalette | ImageIO::PaletteSingle, NULL, m_Palette);
+		TextureIO(ImageIO::ImportPalette | ImageIO::PaletteSingle, NULL, m_Palette);
 	}
-	TooltipOnHover(Str.FormatCStyle("Replace all with palettes from raw file data"));
+	TooltipOnHover(Str.FormatCStyle("Replace palette (%d) from file\r\n\r\nData will be interpreted as raw binary when file type is unknown", m_Palette));
 
-	ImGui::BeginDisabled(Texture().GetPalette().empty());
-	if (ImGui::Button("Export TIM##PaletteWindow", ImVec2(ImGui::CalcTextSize("Width##CreateModal").x, 0)))
-	{
-		ExportPaletteToTIM();
-	}
-	TooltipOnHover(Str.FormatCStyle("Export all palettes to Sony Texture Image", m_Palette));
-	ImGui::EndDisabled();
-
-	ImGui::SameLine();
-
-	if (ImGui::Button("Import TIM##PaletteWindow", ImVec2(ImGui::CalcTextSize("Width##CreateModal").x, 0)))
-	{
-		ImportPaletteFromTIM();
-		ImGui::End();
-		return;
-	}
-	TooltipOnHover(Str.FormatCStyle("Replace all with palettes from Sony Texture Image", m_Palette));
-
-	ImGui::BeginDisabled(!Texture().GetCF());
+	/*ImGui::BeginDisabled(!Texture().GetCF());
 	{
 		ImGui::SetNextItemWidth(ImGui::CalcTextSize("VRAM X__##FileWindow").x);
 		if (ImGui::InputScalar("VRAM X (CLUT)##FileWindow", ImGuiDataType_U16, &Texture().ClutX()))
@@ -788,31 +766,41 @@ void Global_Application::Palette(void)
 		TooltipOnHover("Value must be in decimal format");
 		Tooltip(Str.FormatCStyle("Vertical position of palette data in VRAM\r\n\r\nMouse scrollwheel can be used while hovering"));
 	}
-	ImGui::EndDisabled();
+	ImGui::EndDisabled();*/
 
-	ImGui::BeginDisabled(!Texture().GetCF());
-	for (std::uint16_t x = 0; x < Texture().GetPaletteWidth(); x++)
+	if (m_Texture && m_Texture->GetCF())
 	{
-		if (x % 16) { ImGui::SameLine(); }
+		std::size_t pPalette = Texture().GetPalettePtr(m_Palette);
 
-		ImVec4 ColorF = ImVec4(
-			Texture().Red(Texture().GetPalette()[m_Palette][x]) / 255.0f,
-			Texture().Green(Texture().GetPalette()[m_Palette][x]) / 255.0f,
-			Texture().Blue(Texture().GetPalette()[m_Palette][x]) / 255.0f,
-			1.0f);
-
-		ImGui::ColorEdit3(Str.FormatCStyle("Palette Index [%d]##PaletteWindowIndex%d", x, x).c_str(), (float*)&ColorF, ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_NoLabel | ImGuiColorEditFlags_NoOptions);
-
-		Sony_Texture_16bpp Trans1 = Texture().Create16bpp(uint8_t(ColorF.x * 255.0f), uint8_t(ColorF.y * 255.0f), uint8_t(ColorF.z * 255.0f), false);
-
-		if ((Texture().GetPalette()[m_Palette][x].R != Trans1.R) || (Texture().GetPalette()[m_Palette][x].G != Trans1.G) || (Texture().GetPalette()[m_Palette][x].B != Trans1.B))
+		for (auto i = 0; i < Texture().GetPaletteColorMax(); i++)
 		{
-			Texture().GetPalette()[m_Palette][x] = Trans1;
+			if (!m_Texture)
+			{
+				break;
+			}
 
-			ResetTexture();
+			if (i % 16) { ImGui::SameLine(); }
+
+			Sony_Texture_16bpp Color0 = Texture().GetPalette().at(pPalette + i);
+
+			ImVec4 ColorF = ImVec4(
+				Texture().GetRed(Color0) / 255.0f,
+				Texture().GetGreen(Color0) / 255.0f,
+				Texture().GetBlue(Color0) / 255.0f,
+				1.0f);
+
+			ImGui::ColorEdit3(Str.FormatCStyle("Palette Index [%d]##PaletteWindowIndex%d", i, i).c_str(), (float*)&ColorF, ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_NoLabel | ImGuiColorEditFlags_NoOptions);
+
+			Sony_Texture_16bpp Color1 = Texture().Create16bpp((uint8_t)(ColorF.x * 255.0f), (uint8_t)(ColorF.y * 255.0f), (uint8_t)(ColorF.z * 255.0f), Color0.STP);
+
+			if (Color0 != Color1)
+			{
+				Texture().GetPalette().at(pPalette + i) = Color1;
+
+				ResetTexture();
+			}
 		}
 	}
-	ImGui::EndDisabled();
 
 	ImGui::SetWindowSize(ImVec2(ImGui::GetItemRectMax().x + ImGui::GetStyle().WindowPadding.x, ImGui::GetItemRectMax().y + ImGui::GetStyle().WindowPadding.y));
 
@@ -904,7 +892,7 @@ void Global_Application::ImageSettings(void)
 
 		ImGui::BeginDisabled(b_NoData || Texture().TransparencySTP());
 		{
-			if (ImGui::Checkbox("Transparency##UtilityWindow", &Texture().Transparency()))
+			if (ImGui::Checkbox("Transparency##UtilityWindow", &Texture().TransparencyExternal()))
 			{
 				ResetTexture();
 			}
@@ -914,36 +902,36 @@ void Global_Application::ImageSettings(void)
 
 		ImGui::SameLine();
 
-		ImGui::BeginDisabled((b_NoData && Texture().Transparency()) || Texture().TransparencySTP());
+		ImGui::BeginDisabled((b_NoData && Texture().TransparencyExternal()) || Texture().TransparencySTP());
 		{
 			if (Texture().GetDepth() < 24)
 			{
-				Sony_Texture_16bpp Color0 = Texture().Create16bpp(Texture().TransparentColor(), false);
+				Sony_Texture_16bpp Color0 = Texture().Create16bpp(Texture().TransparencyColor(), false);
 
 				ImVec4 ColorF = ImVec4(
-					Texture().Red(Color0) / 255.0f,
-					Texture().Green(Color0) / 255.0f,
-					Texture().Blue(Color0) / 255.0f,
-					0.0f);
+					Texture().GetRed(Color0) / 255.0f,
+					Texture().GetGreen(Color0) / 255.0f,
+					Texture().GetBlue(Color0) / 255.0f,
+					1.0f);
 
 				ImGui::ColorEdit3(Str.FormatCStyle("External Color##UtilityWindow").c_str(), (float*)&ColorF, ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_NoLabel | ImGuiColorEditFlags_NoOptions);
 				Tooltip("External Color\r\n\r\nPreview only; effects are not written to TIM data");
 
-				Sony_Texture_16bpp Color1 = Texture().Create16bpp(uint8_t(ColorF.x * 255.0f), uint8_t(ColorF.y * 255.0f), uint8_t(ColorF.z * 255.0f), false);
+				Sony_Texture_16bpp Color1 = Texture().Create16bpp((uint8_t)(ColorF.x * 255.0f), (uint8_t)(ColorF.y * 255.0f), (uint8_t)(ColorF.z * 255.0f), Color0.STP);
 
-				if ((Color0.R != Color1.R) || (Color0.G != Color1.G) || (Color0.B != Color1.B))
+				if (Color0 != Color1)
 				{
-					Texture().TransparentColor() = (0x00 << 24) | (Texture().Blue(Color1) << 16) | (Texture().Green(Color1) << 8) | Texture().Red(Color1);
+					Texture().TransparencyColor() = (0x00 << 24) | (Texture().GetBlue(Color1) << 16) | (Texture().GetGreen(Color1) << 8) | Texture().GetRed(Color1);
 
 					ResetTexture();
 				}
 			}
 			else
 			{
-				uint8_t Red = (Texture().TransparentColor() & 0xFF);
-				uint8_t Green = ((Texture().TransparentColor() >> 8) & 0xFF);
-				uint8_t Blue = ((Texture().TransparentColor() >> 16) & 0xFF);
-				uint8_t Alpha = ((Texture().TransparentColor() >> 24) & 0xFF);
+				uint8_t Red = (Texture().TransparencyColor() & 0xFF);
+				uint8_t Green = ((Texture().TransparencyColor() >> 8) & 0xFF);
+				uint8_t Blue = ((Texture().TransparencyColor() >> 16) & 0xFF);
+				uint8_t Alpha = ((Texture().TransparencyColor() >> 24) & 0xFF);
 
 				ImVec4 ColorF = ImVec4(
 					Red / 255.0f,
@@ -961,7 +949,7 @@ void Global_Application::ImageSettings(void)
 
 				if ((Red != NewRed) || (Green != NewGreen) || (Blue != NewBlue) || (Alpha != NewAlpha))
 				{
-					Texture().TransparentColor() = (NewAlpha << 24) | (NewBlue << 16) | (NewGreen << 8) | NewRed;
+					Texture().TransparencyColor() = (NewAlpha << 24) | (NewBlue << 16) | (NewGreen << 8) | NewRed;
 
 					ResetTexture();
 				}
@@ -975,7 +963,18 @@ void Global_Application::ImageSettings(void)
 			{
 				ResetTexture();
 			}
-			Tooltip("Solid black pixels are fully transparent");
+			if (Texture().GetDepth() == 24)
+			{
+				Tooltip("Solid black pixels (8:8:8) are fully transparent");
+			}
+			else if (Texture().GetDepth() == 16)
+			{
+				Tooltip("Solid black pixels (5:5:5:1) are fully transparent");
+			}
+			else
+			{
+				Tooltip("Solid black palette colors are fully transparent");
+			}
 		}
 		ImGui::EndDisabled();
 
@@ -1170,7 +1169,7 @@ void Global_Application::ImageWindow(void)
 				Sony_Texture_4bpp Pixel = Texture().Get4bpp(m_MousePixelX, m_MousePixelY);
 				if (!Texture().GetPalette().empty())
 				{
-					Color = Texture().GetPalette()[m_Palette][m_MousePixelX & 1 ? Pixel.Pix1 : Pixel.Pix0];
+					Color = Texture().GetPaletteColor(m_Palette, m_MousePixelX & 1 ? Pixel.Pix1 : Pixel.Pix0);
 				}
 				ImGui::Text("Palette Color (index=%d)", m_MousePixelX & 1 ? Pixel.Pix1 : Pixel.Pix0);
 			}
@@ -1180,7 +1179,7 @@ void Global_Application::ImageWindow(void)
 				Sony_Texture_8bpp Pixel = Texture().Get8bpp(m_MousePixelX, m_MousePixelY);
 				if (!Texture().GetPalette().empty())
 				{
-					Color = Texture().GetPalette()[m_Palette][Pixel.Pix0];
+					Color = Texture().GetPaletteColor(m_Palette, Pixel.Pix0);
 				}
 				ImGui::Text("Palette Color (index=%d)", Pixel.Pix0);
 			}
@@ -1198,14 +1197,14 @@ void Global_Application::ImageWindow(void)
 
 			if (m_LastKnownBitsPerPixel < 24)
 			{
-				ImGui::Text("R: %d, G: %d, B: %d, STP: %d", Texture().Red(Color), Texture().Green(Color), Texture().Blue(Color), Texture().STP(Color));
+				ImGui::Text("R: %d, G: %d, B: %d, STP: %d", Texture().GetRed(Color), Texture().GetGreen(Color), Texture().GetBlue(Color), Texture().GetSTP(Color));
 			}
 
 			if (ImGui::Button("Copy##ImageWindow_Pixel"))
 			{
 				if (m_LastKnownBitsPerPixel < 24)
 				{
-					ClipboardColor = (Texture().STP(Color) << 24) | (Texture().Blue(Color) << 16) | (Texture().Green(Color) << 8) | Texture().Red(Color);
+					ClipboardColor = (Texture().GetSTP(Color) << 24) | (Texture().GetBlue(Color) << 16) | (Texture().GetGreen(Color) << 8) | Texture().GetRed(Color);
 				}
 				else
 				{
@@ -1229,76 +1228,87 @@ void Global_Application::CreateModal(void)
 		ImGui::OpenPopup("Create##CreateModal");
 	}
 
-	ImGui::SetNextWindowPos(ImVec2((ImGui::GetIO().DisplaySize.x - ImGui::GetWindowSize().x) / 2, (ImGui::GetIO().DisplaySize.y - ImGui::GetWindowSize().y) / 4));
+	ImGui::SetNextWindowPos(ImVec2((ImGui::GetIO().DisplaySize.x - ImGui::GetWindowSize().x) / 2, (ImGui::GetIO().DisplaySize.y - ImGui::GetWindowSize().y) / 3));
 
 	if (ImGui::BeginPopupModal("Create##CreateModal", NULL, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoMove))
 	{
 		float ItemWidth = ImGui::CalcTextSize("Width##CreateModal").x;
 
+		const char* PaletteFileTypes[] = { "None", "RAW", "TIM", "CLT", "BMP", "PAL", "PNG" };
+		const char* PixelFileTypes[] = { "None", "RAW", "TIM", "PXL", "BMP", "PNG", "JPG" };
+
+		bool b_PaletteRaw = (std::to_underlying(m_CreateInfo.PaletteType) & (std::to_underlying(ImageType::RAW)));
+		bool b_PaletteTIM = (std::to_underlying(m_CreateInfo.PaletteType) & (std::to_underlying(ImageType::TIM)));
+		bool b_PaletteCLT = (std::to_underlying(m_CreateInfo.PaletteType) & (std::to_underlying(ImageType::CLT)));
+		bool b_PalettePAL = (std::to_underlying(m_CreateInfo.PaletteType) & (std::to_underlying(ImageType::PAL)));
+		bool b_PaletteNone = (b_PaletteRaw || b_PaletteTIM || b_PaletteCLT || b_PalettePAL) ? false : true;
+
+		bool b_PixelsRaw = (std::to_underlying(m_CreateInfo.PixelType) & (std::to_underlying(ImageType::RAW)));
+		bool b_PixelsTIM = (std::to_underlying(m_CreateInfo.PixelType) & (std::to_underlying(ImageType::TIM)));
+		bool b_PixelsPXL = (std::to_underlying(m_CreateInfo.PixelType) & (std::to_underlying(ImageType::PXL)));
+		bool b_PixelsBMP = (std::to_underlying(m_CreateInfo.PixelType) & (std::to_underlying(ImageType::BMP)));
+		bool b_PixelsPNG = (std::to_underlying(m_CreateInfo.PixelType) & (std::to_underlying(ImageType::PNG)));
+		bool b_PixelsJPG = (std::to_underlying(m_CreateInfo.PixelType) & (std::to_underlying(ImageType::JPG)));
+		bool b_PixelsNone = (b_PixelsRaw || b_PixelsTIM || b_PixelsPXL || b_PixelsBMP || b_PixelsPNG || b_PixelsJPG) ? false : true;
+
 		{
-			ImGui::BeginDisabled(b_RawExternalPixelsFromTIM);
-			if (ImGui::RadioButton("4-bit##CreateModal", b_Raw4bpp))
+			ImGui::BeginDisabled(!b_PixelsNone && !b_PixelsRaw);
+			if (ImGui::RadioButton("4-bit##CreateModal", (m_CreateInfo.Depth == 4)))
 			{
-				b_Raw4bpp = true;
-				b_Raw8bpp = false;
-				b_Raw16bpp = false;
-				b_Raw24bpp = false;
-				AdjustWidthInput(m_RawWidth);
-				AdjustHeightInput(m_RawHeight);
+				m_CreateInfo.Depth = 4;
+				AdjustWidthInput(m_CreateInfo.Width);
+				AdjustHeightInput(m_CreateInfo.Height);
 			}
 			ImGui::SameLine();
-			if (ImGui::RadioButton("8-bit##CreateModal", b_Raw8bpp))
+			if (ImGui::RadioButton("8-bit##CreateModal", (m_CreateInfo.Depth == 8)))
 			{
-				b_Raw4bpp = false;
-				b_Raw8bpp = true;
-				b_Raw16bpp = false;
-				b_Raw24bpp = false;
-				AdjustWidthInput(m_RawWidth);
-				AdjustHeightInput(m_RawHeight);
+				m_CreateInfo.Depth = 8;
+				AdjustWidthInput(m_CreateInfo.Width);
+				AdjustHeightInput(m_CreateInfo.Height);
 			}
 			ImGui::SameLine();
-			if (ImGui::RadioButton("16-bit##CreateModal", b_Raw16bpp))
+			if (ImGui::RadioButton("16-bit##CreateModal", (m_CreateInfo.Depth == 16)))
 			{
-				b_Raw4bpp = false;
-				b_Raw8bpp = false;
-				b_Raw16bpp = true;
-				b_Raw24bpp = false;
+				m_CreateInfo.Depth = 16;
+				AdjustWidthInput(m_CreateInfo.Width);
+				AdjustHeightInput(m_CreateInfo.Height);
 			}
 			ImGui::SameLine();
-			if (ImGui::RadioButton("24-bit##CreateModal", b_Raw24bpp))
+			if (ImGui::RadioButton("24-bit##CreateModal", (m_CreateInfo.Depth == 24)))
 			{
-				b_Raw4bpp = false;
-				b_Raw8bpp = false;
-				b_Raw16bpp = false;
-				b_Raw24bpp = true;
+				m_CreateInfo.Depth = 24;
+				AdjustWidthInput(m_CreateInfo.Width);
+				AdjustHeightInput(m_CreateInfo.Height);
 			}
 			ImGui::EndDisabled();
 		}
 
+		uint16_t nMaxTIMPalette = m_CreateInfo.Depth == 4 ? ((1024 * 512) / 16) : ((1024 * 512) / 256);
+
 		ImGui::NewLine();
 
 		{
-			ImGui::BeginDisabled(b_RawExternalPixelsFromTIM);
+			ImGui::BeginDisabled(!b_PixelsNone && !b_PixelsRaw);
 
 			ImGui::SetNextItemWidth(ItemWidth);
-			if (ImGui::InputScalar("Width##CreateModal", ImGuiDataType_U16, &m_RawWidth))
+			if (ImGui::InputScalar("Width##CreateModal", ImGuiDataType_U16, &m_CreateInfo.Width))
 			{
-				AdjustWidthInput(m_RawWidth);
+				AdjustWidthInput(m_CreateInfo.Width);
 			}
-			if (ScrollOnHover(&m_RawWidth, ImGuiDataType_U16, 16, 1, 1024))
+			if (ScrollOnHover(&m_CreateInfo.Width, ImGuiDataType_U16, 16, 1, 1024))
 			{
-				AdjustWidthInput(m_RawWidth);
+				AdjustWidthInput(m_CreateInfo.Width);
 			}
 			TooltipOnHover("Value must be in decimal format\r\n\r\nMouse scrollwheel can be used while hovering");
 
 			ImGui::SetNextItemWidth(ItemWidth);
-			if (ImGui::InputScalar("Height##CreateModal", ImGuiDataType_U16, &m_RawHeight))
+			if (ImGui::InputScalar("Height##CreateModal", ImGuiDataType_U16, &m_CreateInfo.Height))
 			{
-				AdjustHeightInput(m_RawHeight);
+				AdjustHeightInput(m_CreateInfo.Height);
 			}
-			if (ScrollOnHover(&m_RawHeight, ImGuiDataType_U16, 16, 1, 512))
+			if (ScrollOnHover(&m_CreateInfo.Height, ImGuiDataType_U16, 16, 1, 512))
 			{
-				AdjustHeightInput(m_RawHeight);
+				AdjustHeightInput(m_CreateInfo.Height);
 			}
 			TooltipOnHover("Value must be in decimal format\r\n\r\nMouse scrollwheel can be used while hovering");
 
@@ -1308,121 +1318,245 @@ void Global_Application::CreateModal(void)
 		ImGui::NewLine();
 
 		{
-			bool b_PixelOffset = true;
-			if (b_RawExternalPixels)
 			{
-				b_PixelOffset = false;
+				ImGui::BeginDisabled(b_PixelsNone);
+				ImGui::SetNextItemWidth(ItemWidth);
+				String PointerStr = Str.FormatCStyle("%llx", m_CreateInfo.pPixel);
+				if (ImGui::InputTextWithHint("Pixel Offset##CreateModal", "hexadecimal", &PointerStr))
+				{
+					m_CreateInfo.pPixel = std::stoull(PointerStr, nullptr, 16);
+				}
+				ScrollOnHover(&m_CreateInfo.pPixel, ImGuiDataType_U64, 16, 0, -1);
+				TooltipOnHover("Value must be in hexadecimal format");
+				if (!b_PixelsNone)
+				{
+					Tooltip(Str.FormatCStyle("Pointer to pixel file or raw pixels in \"%ws\"\r\n\r\nMouse scrollwheel can be used while hovering", m_CreateInfo.Pixel.filename().wstring().c_str()));
+				}
+				else
+				{
+					Tooltip("...");
+				}
+				ImGui::EndDisabled();
 			}
 
-			ImGui::BeginDisabled(!(b_RawExternalPixels || b_RawExternalPixelsFromTIM));
-			ImGui::SetNextItemWidth(ItemWidth);
-			String PointerStr = Str.FormatCStyle("%llx", m_RawPixelPtr);
-			if (ImGui::InputTextWithHint("Pixel Offset##CreateModal", "hexadecimal", &PointerStr))
 			{
-				m_RawPixelPtr = std::stoull(PointerStr, nullptr, 16);
-			}
-			ScrollOnHover(&m_RawPixelPtr, ImGuiDataType_U64, 16, 0, -1);
-			TooltipOnHover("Value must be in hexadecimal format");
-			if (b_RawExternalPixels)
-			{
-				Tooltip(Str.FormatCStyle("Pointer to raw pixel data in \"%ws\"\r\n\r\nMouse scrollwheel can be used while hovering", m_RawPixelFilename.filename().wstring().c_str()));
-			}
-			else if (b_RawExternalPixelsFromTIM)
-			{
-				Tooltip(Str.FormatCStyle("Pointer to TIM file in \"%ws\"\r\n\r\nMouse scrollwheel can be used while hovering", m_RawPixelFilename.filename().wstring().c_str()));
-			}
-			else
-			{
-				Tooltip("...");
-			}
-			ImGui::EndDisabled();
+				uint32_t iFileType = b_PixelsNone ? 0 : b_PixelsRaw ? 1 : b_PixelsTIM ? 2 : b_PixelsPXL ? 3 : b_PixelsBMP ? 4 : b_PixelsPNG ? 5 : b_PixelsJPG ? 6 : 0;
 
-			if (ImGui::Checkbox("Import RAW pixels##CreateModal", &b_RawExternalPixels))
-			{
-				b_RawExternalPixelsFromTIM = false;
-			}
-			Tooltip(Str.FormatCStyle("Import raw pixel data located at 0x%llx in \"%ws\"", m_RawPixelPtr, m_RawPixelFilename.filename().wstring().c_str()));
+				ImGui::SetNextItemWidth(ItemWidth);
 
-			if (ImGui::Checkbox("Import TIM Pixels##CreateModal", &b_RawExternalPixelsFromTIM))
-			{
-				b_RawExternalPixels = false;
-			}
-			Tooltip(Str.FormatCStyle("Import pixel data from TIM file located at 0x%llx in \"%ws\"", m_RawPixelPtr, m_RawPixelFilename.filename().wstring().c_str()));
+				if (ImGui::BeginCombo("Pixel File Type##CreateModal", PixelFileTypes[iFileType]))
+				{
+					iFileType = std::clamp(iFileType, 0U, 6U);
 
-			ImGui::BeginDisabled(!b_RawExternalPixels && !b_RawExternalPixelsFromTIM);
-			String ButtonName = "";
-			StringW ButtonDesc = L"";
-			StringW ButtonFilter = L"";
-			b_RawExternalPixels ? ButtonName = "Pixel File##CreateModal" : b_RawExternalPixelsFromTIM ? ButtonName = "Pixel TIM##CreateModal" : ButtonName = "...##CreateModalNoExtPixels";
-			if (ImGui::Button(ButtonName.c_str(), ImVec2(ImGui::CalcTextSize("Width##CreateModal").x, 0)))
-			{
-				SetRawPixelFilename();
+					for (std::size_t i = 0; i < IM_ARRAYSIZE(PixelFileTypes); i++)
+					{
+						bool b_IsSelected = (iFileType == i);
+
+						if (ImGui::Selectable(PixelFileTypes[i], b_IsSelected))
+						{
+							iFileType = (uint32_t)i;
+							switch (iFileType)
+							{
+							case 0:
+								m_CreateInfo.PixelType = ImageType::None;
+								break;
+							case 1:
+								m_CreateInfo.PixelType = ImageType::RAW;
+								break;
+							case 2:
+								m_CreateInfo.PixelType = ImageType::TIM;
+								break;
+							case 3:
+								m_CreateInfo.PixelType = ImageType::PXL;
+								break;
+							case 4:
+								m_CreateInfo.PixelType = ImageType::BMP;
+								break;
+							case 5:
+								m_CreateInfo.PixelType = ImageType::PNG;
+								break;
+							case 6:
+								m_CreateInfo.PixelType = ImageType::JPG;
+								break;
+							}
+						}
+						if (b_IsSelected)
+						{
+							ImGui::SetItemDefaultFocus();
+						}
+					}
+
+					ImGui::EndCombo();
+				}
+
+				switch (iFileType)
+				{
+				case 0:
+					Tooltip(Str.FormatCStyle("Create %d x %d x %dbpp canvas", m_CreateInfo.Width, m_CreateInfo.Height, m_CreateInfo.Depth));
+					break;
+				case 1:
+				{
+					std::uint16_t Width = m_CreateInfo.Width;
+
+					switch (m_CreateInfo.Depth)
+					{
+					case 4:
+						Width = Width / 2;
+						break;
+					case 8:
+						Width = Width;
+						break;
+					case 16:
+						Width = Width * 2;
+						break;
+					case 24:
+						Width = Width * 3;
+						break;
+					}
+
+					Tooltip(Str.FormatCStyle("Read raw pixel data (0x%llx bytes) at 0x%llx in \"%ws\"", (Width * m_CreateInfo.Height), m_CreateInfo.pPixel, m_CreateInfo.Pixel.filename().wstring().c_str()));
+				}
+					break;
+				case 2:
+				case 3:
+				case 4:
+				case 5:
+				case 6:
+					Tooltip(Str.FormatCStyle("Read \"%s\" file type at 0x%llx in \"%ws\"", PixelFileTypes[iFileType], m_CreateInfo.pPixel, m_CreateInfo.Pixel.filename().wstring().c_str()));
+					break;
+				}
 			}
-			Tooltip("Filename of where pixel data stored");
-			ImGui::Text("%ws", m_RawPixelFilename.filename().wstring().c_str());
-			ImGui::EndDisabled();
+
+			{
+				ImGui::BeginDisabled(b_PixelsNone);
+				String ButtonName = "";
+				!b_PixelsNone ? ButtonName = "Pixel File##CreateModal" : ButtonName = "...##CreateModalNoExtPixels";
+				if (ImGui::Button(ButtonName.c_str(), ImVec2(ItemWidth, 0.0f)))
+				{
+					SetExternalPixelFilename();
+				}
+				Tooltip("Select file name of where pixel data is stored");
+				ImGui::Text("%ws", m_CreateInfo.Pixel.filename().wstring().c_str());
+				ImGui::EndDisabled();
+			}
 		}
 
 		ImGui::NewLine();
 
 		{
-			ImGui::BeginDisabled(b_RawExternalPaletteFromTIM);
-			ImGui::SetNextItemWidth(ItemWidth);
-			if (ImGui::InputScalar("CLUT Amount##CreateModal", ImGuiDataType_U16, &m_RawPaletteCount))
 			{
-				m_RawPaletteCount = std::clamp(m_RawPaletteCount, (uint16_t)0, (uint16_t)MAX_TIM_PALETTE);
+				ImGui::BeginDisabled(!b_PaletteNone && !b_PaletteRaw);
+				ImGui::SetNextItemWidth(ItemWidth);
+				if (ImGui::InputScalar("Palette Amount##CreateModal", ImGuiDataType_U16, &m_CreateInfo.nPalette))
+				{
+					m_CreateInfo.nPalette = std::clamp(m_CreateInfo.nPalette, (uint16_t)0, nMaxTIMPalette);
+				}
+				ScrollOnHover(&m_CreateInfo.nPalette, ImGuiDataType_U16, 1, 0, nMaxTIMPalette);
+				TooltipOnHover("Value must be in decimal format");
+				Tooltip(Str.FormatCStyle("4bpp = 16 colors (0x20 bytes) per palette\r\n\r\n8bpp = 256 colors (0x200 bytes) per palette\r\n\r\nMouse scrollwheel can be used while hovering", m_CreateInfo.Palette.filename().wstring().c_str()));
+				ImGui::EndDisabled();
 			}
-			ScrollOnHover(&m_RawPaletteCount, ImGuiDataType_U16, 1, 0, MAX_TIM_PALETTE);
-			TooltipOnHover("Value must be in decimal format");
-			Tooltip(Str.FormatCStyle("4bpp = 16 colors (0x20 bytes) per CLUT\r\n\r\n8bpp = 256 colors (0x200 bytes) per CLUT\r\n\r\nMouse scrollwheel can be used while hovering", m_RawPaletteFilename.filename().wstring().c_str()));
-			ImGui::EndDisabled();
 
-			ImGui::BeginDisabled(!(b_RawExternalPalette || b_RawExternalPaletteFromTIM));
-			ImGui::SetNextItemWidth(ItemWidth);
-			String PointerStr = Str.FormatCStyle("%llx", m_RawPalettePtr);
-			if (ImGui::InputTextWithHint("CLUT Offset##CreateModal", "hexadecimal", &PointerStr))
 			{
-				m_RawPalettePtr = std::stoull(PointerStr, nullptr, 16);
+				ImGui::BeginDisabled(b_PaletteNone);
+				ImGui::SetNextItemWidth(ItemWidth);
+				String PointerStr = Str.FormatCStyle("%llx", m_CreateInfo.pPalette);
+				if (ImGui::InputTextWithHint("Palette Offset##CreateModal", "hexadecimal", &PointerStr))
+				{
+					m_CreateInfo.pPalette = std::stoull(PointerStr, nullptr, 16);
+				}
+				ScrollOnHover(&m_CreateInfo.pPalette, ImGuiDataType_U64, 16, 0, -1);
+				TooltipOnHover("Value must be in hexadecimal format");
+				if (!b_PaletteNone)
+				{
+					Tooltip(Str.FormatCStyle("Pointer to palette file or raw palette(s) in \"%ws\"\r\n\r\nMouse scrollwheel can be used while hovering", m_CreateInfo.Pixel.filename().wstring().c_str()));
+				}
+				else
+				{
+					Tooltip("...");
+				}
+				ImGui::EndDisabled();
 			}
-			ScrollOnHover(&m_RawPalettePtr, ImGuiDataType_U64, 16, 0, -1);
-			TooltipOnHover("Value must be in hexadecimal format");
-			if (b_RawExternalPalette)
-			{
-				Tooltip(Str.FormatCStyle("Pointer to raw palette data in \"%ws\"\r\n\r\nMouse scrollwheel can be used while hovering", m_RawPaletteFilename.filename().wstring().c_str()));
-			}
-			else if (b_RawExternalPaletteFromTIM)
-			{
-				Tooltip(Str.FormatCStyle("Pointer to TIM file in \"%ws\"\r\n\r\nMouse scrollwheel can be used while hovering", m_RawPaletteFilename.filename().wstring().c_str()));
-			}
-			else
-			{
-				Tooltip("...");
-			}
-			ImGui::EndDisabled();
 
-			if (ImGui::Checkbox("Import RAW Palette##CreateModal", &b_RawExternalPalette))
 			{
-				b_RawExternalPaletteFromTIM = false;
-			}
-			Tooltip(Str.FormatCStyle("Import %d raw palette/s located at 0x%llx in \"%ws\"", m_RawPaletteCount, m_RawPalettePtr, m_RawPaletteFilename.filename().wstring().c_str()));
+				uint32_t iFileType = b_PaletteNone ? 0 : b_PaletteRaw ? 1 : b_PaletteTIM ? 2 : b_PaletteCLT ? 3 : b_PalettePAL ? 4 : 0;
 
-			if (ImGui::Checkbox("Import TIM Palette##CreateModal", &b_RawExternalPaletteFromTIM))
-			{
-				b_RawExternalPalette = false;
-			}
-			Tooltip(Str.FormatCStyle("Import all palettes from TIM file located at 0x%llx in \"%ws\"", m_RawPalettePtr, m_RawPaletteFilename.filename().wstring().c_str()));
+				ImGui::SetNextItemWidth(ItemWidth);
 
-			String ButtonName = "";
+				if (ImGui::BeginCombo("Palette File Type##CreateModal", PaletteFileTypes[iFileType]))
+				{
+					iFileType = std::clamp(iFileType, 0U, 6U);
+
+					for (std::size_t i = 0; i < IM_ARRAYSIZE(PaletteFileTypes); i++)
+					{
+						bool b_IsSelected = (iFileType == i);
+
+						if (ImGui::Selectable(PaletteFileTypes[i], b_IsSelected))
+						{
+							iFileType = (uint32_t)i;
+							switch (iFileType)
+							{
+							case 0:
+								m_CreateInfo.PaletteType = ImageType::None;
+								break;
+							case 1:
+								m_CreateInfo.PaletteType = ImageType::RAW;
+								break;
+							case 2:
+								m_CreateInfo.PaletteType = ImageType::TIM;
+								break;
+							case 3:
+								m_CreateInfo.PaletteType = ImageType::CLT;
+								break;
+							case 4:
+								m_CreateInfo.PaletteType = ImageType::BMP;
+								break;
+							case 5:
+								m_CreateInfo.PaletteType = ImageType::PAL;
+								break;
+							case 6:
+								m_CreateInfo.PaletteType = ImageType::PNG;
+								break;
+							}
+						}
+						if (b_IsSelected)
+						{
+							ImGui::SetItemDefaultFocus();
+						}
+					}
+					ImGui::EndCombo();
+				}
+
+				switch (iFileType)
+				{
+				case 0:
+					Tooltip(Str.FormatCStyle("Create %d palette(s)", m_CreateInfo.nPalette));
+					break;
+				case 1:
+					Tooltip(Str.FormatCStyle("Read %d palette(s) (0x%llx bytes) at 0x%llx in \"%ws\"", m_CreateInfo.nPalette,
+						m_CreateInfo.Depth == 4 ? (m_CreateInfo.nPalette * 0x20) : (m_CreateInfo.nPalette * 0x200),
+						m_CreateInfo.pPalette, m_CreateInfo.Palette.filename().wstring().c_str()));
+					break;
+				case 2:
+				case 3:
+				case 4:
+					Tooltip(Str.FormatCStyle("Read \"%s\" file type at %llx in \"%ws\"", PaletteFileTypes[iFileType], m_CreateInfo.pPalette, m_CreateInfo.Palette.filename().wstring().c_str()));
+					break;
+				}
+			}
 			
-			ImGui::BeginDisabled(!b_RawExternalPalette && !b_RawExternalPaletteFromTIM);
-			b_RawExternalPalette ? ButtonName = "Palette File##CreateModal" : b_RawExternalPaletteFromTIM ? ButtonName = "Palette TIM##CreateModal" : ButtonName = "...##CreateModalNoExtPalette";
-			if (ImGui::Button(ButtonName.c_str(), ImVec2(ImGui::CalcTextSize("Width##CreateModal").x, 0)))
 			{
-				SetRawPaletteFilename();
+				ImGui::BeginDisabled(b_PaletteNone);
+				String ButtonName = "";
+				!b_PaletteNone ? ButtonName = "Palette File##CreateModal" : ButtonName = "...##CreateModalNoExtPalette";
+				if (ImGui::Button(ButtonName.c_str(), ImVec2(ImGui::CalcTextSize("Width##CreateModal").x, 0)))
+				{
+					SetExternalPaletteFilename();
+				}
+				Tooltip("Select file name of where palette data is stored");
+				ImGui::Text("%ws", m_CreateInfo.Palette.filename().wstring().c_str());
+				ImGui::EndDisabled();
 			}
-			Tooltip("Filename of where palette data is stored");
-			ImGui::Text("%ws", m_RawPaletteFilename.filename().wstring().c_str());
-			ImGui::EndDisabled();
 		}
 
 		ImGui::NewLine();
@@ -1430,7 +1564,7 @@ void Global_Application::CreateModal(void)
 		{
 			if (ImGui::Button("Create##CreateModal", ImVec2(ImGui::CalcTextSize("___##CreateModal").x, 0)))
 			{
-				if (Create(b_Raw4bpp ? 4 : b_Raw8bpp ? 8 : b_Raw16bpp ? 16 : b_Raw24bpp ? 24 : 16, m_RawWidth, m_RawHeight, m_RawPixelPtr, m_RawPalettePtr))
+				if (Create())
 				{
 					ImGui::CloseCurrentPopup();
 					CreateModalFunc = []() {};
@@ -1452,26 +1586,75 @@ void Global_Application::CreateModal(void)
 	}
 }
 
-void Global_Application::SearchModal(std::filesystem::path Filename)
+void Global_Application::SearchModal(void)
 {
-	//bool b_ViewThisWindow = true;
-	//ImGui::Begin("Search##TextureSearch", &b_ViewThisWindow, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoResize);
+	if (!ImGui::IsPopupOpen("Search##SearchModal"))
+	{
+		ImGui::OpenPopup("Search##SearchModal");
+	}
 
-	//float progress = 0.0f;
-	//ImGui::ProgressBar(progress, ImVec2(0.0f, 0.0f));
+	ImGui::SetNextWindowPos(ImVec2((ImGui::GetIO().DisplaySize.x - ImGui::GetWindowSize().x) / 2, (ImGui::GetIO().DisplaySize.y - ImGui::GetWindowSize().y) / 1.5f));
 
-	//auto ProgressCallback = [&](float value) {
-	//	progress = value;
-	//	ImGui::ProgressBar(progress, ImVec2(0.0f, 0.0f));
-	//	ImGui::Text("Searching for textures... %.0f%%", progress * 100.0f);
-	//	};
+	if (ImGui::BeginPopupModal("Search##SearchModal", NULL, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoMove))
+	{
+		if (m_ProgressBar >= 1.0f)
+		{
+			ImGui::CloseCurrentPopup();
+			SearchModalFunc = []() {};
+		}
 
-	auto ProgressCallback = [&](float value) {
-		};
+		ImGui::ProgressBar(m_ProgressBar, ImVec2(0.0f, 0.0f));
 
-	m_Files = std::make_unique<Sony_PlayStation_Texture>()->Search(Filename, 0, ProgressCallback);
+		float WindowWidth = ImGui::GetWindowSize().x;
+		float ButtonWidth = ImGui::CalcTextSize("Cancel##SearchModal").x + ImGui::GetStyle().FramePadding.x * 2.0f;
+		float ButtonHeight = ImGui::GetFrameHeight() * 1.25f;
+		ImGui::SetCursorPosX((WindowWidth - ButtonWidth) / 2.0f);
 
-	//ImGui::SetWindowSize(ImVec2(ImGui::GetItemRectMax().x + ImGui::GetStyle().WindowPadding.x, ImGui::GetItemRectMax().y + ImGui::GetStyle().WindowPadding.y));
+		if (ImGui::Button("Cancel##SearchModal", ImVec2(ButtonWidth, ButtonHeight)))
+		{
+			SearchModalCb(1.0f, b_Searching = false);
+			ImGui::CloseCurrentPopup();
+			SearchModalFunc = []() {};
+		}
 
-	//ImGui::End();
+		ImGui::SetWindowSize(ImVec2(ImGui::GetItemRectMax().x + ImGui::GetStyle().WindowPadding.x, ImGui::GetItemRectMax().y + ImGui::GetStyle().WindowPadding.y));
+
+		ImGui::EndPopup();
+	}
+}
+
+void Global_Application::SaveAllModal(void) const
+{
+	if (!ImGui::IsPopupOpen("Save As##SaveAllAsModal"))
+	{
+		ImGui::OpenPopup("Save As##SaveAllAsModal");
+	}
+
+	ImGui::SetNextWindowPos(ImVec2((ImGui::GetIO().DisplaySize.x - ImGui::GetWindowSize().x) / 2, (ImGui::GetIO().DisplaySize.y - ImGui::GetWindowSize().y) / 1.5f));
+
+	if (ImGui::BeginPopupModal("Save As##SaveAllAsModal", NULL, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoMove))
+	{
+		if (m_ProgressBar >= 1.0f)
+		{
+			ImGui::CloseCurrentPopup();
+			SaveAllFunc = []() {};
+		}
+
+		ImGui::ProgressBar(m_ProgressBar, ImVec2(0.0f, 0.0f));
+
+		float WindowWidth = ImGui::GetWindowSize().x;
+		float ButtonWidth = ImGui::CalcTextSize("Cancel##SaveAllAsModal").x + ImGui::GetStyle().FramePadding.x * 2.0f;
+		float ButtonHeight = ImGui::GetFrameHeight() * 1.25f;
+		ImGui::SetCursorPosX((WindowWidth - ButtonWidth) / 2.0f);
+
+		if (ImGui::Button("Cancel##SaveAllAsModal", ImVec2(ButtonWidth, ButtonHeight)))
+		{
+			ImGui::CloseCurrentPopup();
+			SaveAllFunc = []() {};
+		}
+
+		ImGui::SetWindowSize(ImVec2(ImGui::GetItemRectMax().x + ImGui::GetStyle().WindowPadding.x, ImGui::GetItemRectMax().y + ImGui::GetStyle().WindowPadding.y));
+
+		ImGui::EndPopup();
+	}
 }

@@ -20,17 +20,26 @@
     <Filter Include="Standard\DX9">
       <UniqueIdentifier>{c1761d5c-6ae8-4d79-bc20-c07ef511c194}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Imgui">
-      <UniqueIdentifier>{9d8e390a-886c-4499-9385-92be596f0bbc}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Imgui\backends">
-      <UniqueIdentifier>{77c55aae-2142-4190-b2bc-c28e2cf6865a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Imgui\misc">
-      <UniqueIdentifier>{9e56711b-89e0-4970-8bde-97b0615e7fe9}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source">
       <UniqueIdentifier>{e827c992-ebc2-4aa7-bec4-f6b614491433}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SDK">
+      <UniqueIdentifier>{274f27ef-6b56-4b4b-a673-32ee2b7d7ff5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SDK\zlib">
+      <UniqueIdentifier>{53b65cf9-f7b2-497f-adf5-a8b0d177d19b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SDK\imgui">
+      <UniqueIdentifier>{9d8e390a-886c-4499-9385-92be596f0bbc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SDK\imgui\backends">
+      <UniqueIdentifier>{77c55aae-2142-4190-b2bc-c28e2cf6865a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SDK\imgui\misc">
+      <UniqueIdentifier>{9e56711b-89e0-4970-8bde-97b0615e7fe9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SDK\libpng">
+      <UniqueIdentifier>{1eac0912-e668-4367-943a-a5486bcd1e13}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -73,9 +82,6 @@
     <ClCompile Include="..\..\mstd-lib\std_debug.cpp">
       <Filter>Standard\Debug</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\sony-lib\sony_texture.cpp">
-      <Filter>Sony</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\sony-lib\sony_bitstream.cpp">
       <Filter>Sony</Filter>
     </ClCompile>
@@ -95,28 +101,28 @@
       <Filter>Standard</Filter>
     </ClCompile>
     <ClCompile Include="..\..\sdk\imgui\imgui.cpp">
-      <Filter>Imgui</Filter>
+      <Filter>SDK\imgui</Filter>
     </ClCompile>
     <ClCompile Include="..\..\sdk\imgui\imgui_demo.cpp">
-      <Filter>Imgui</Filter>
+      <Filter>SDK\imgui</Filter>
     </ClCompile>
     <ClCompile Include="..\..\sdk\imgui\imgui_draw.cpp">
-      <Filter>Imgui</Filter>
+      <Filter>SDK\imgui</Filter>
     </ClCompile>
     <ClCompile Include="..\..\sdk\imgui\imgui_tables.cpp">
-      <Filter>Imgui</Filter>
+      <Filter>SDK\imgui</Filter>
     </ClCompile>
     <ClCompile Include="..\..\sdk\imgui\imgui_widgets.cpp">
-      <Filter>Imgui</Filter>
+      <Filter>SDK\imgui</Filter>
     </ClCompile>
     <ClCompile Include="..\..\sdk\imgui\backends\imgui_impl_win32.cpp">
-      <Filter>Imgui\backends</Filter>
+      <Filter>SDK\imgui\backends</Filter>
     </ClCompile>
     <ClCompile Include="..\..\sdk\imgui\backends\imgui_impl_dx9.cpp">
-      <Filter>Imgui\backends</Filter>
+      <Filter>SDK\imgui\backends</Filter>
     </ClCompile>
     <ClCompile Include="..\..\sdk\imgui\misc\cpp\imgui_stdlib.cpp">
-      <Filter>Imgui\misc</Filter>
+      <Filter>SDK\imgui\misc</Filter>
     </ClCompile>
     <ClCompile Include="Source\app.cpp">
       <Filter>Source</Filter>
@@ -138,6 +144,102 @@
     </ClCompile>
     <ClCompile Include="Source\app_settings.cpp">
       <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\sony-lib\sony_texture.cpp">
+      <Filter>Sony</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\sdk\libpng\pngwrite.c">
+      <Filter>SDK\libpng</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\sdk\libpng\pngwtran.c">
+      <Filter>SDK\libpng</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\sdk\libpng\pngwutil.c">
+      <Filter>SDK\libpng</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\sdk\libpng\png.c">
+      <Filter>SDK\libpng</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\sdk\libpng\pngerror.c">
+      <Filter>SDK\libpng</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\sdk\libpng\pngget.c">
+      <Filter>SDK\libpng</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\sdk\libpng\pngmem.c">
+      <Filter>SDK\libpng</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\sdk\libpng\pngpread.c">
+      <Filter>SDK\libpng</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\sdk\libpng\pngread.c">
+      <Filter>SDK\libpng</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\sdk\libpng\pngrio.c">
+      <Filter>SDK\libpng</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\sdk\libpng\pngrtran.c">
+      <Filter>SDK\libpng</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\sdk\libpng\pngset.c">
+      <Filter>SDK\libpng</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\sdk\libpng\pngtest.c">
+      <Filter>SDK\libpng</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\sdk\libpng\pngtrans.c">
+      <Filter>SDK\libpng</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\sdk\libpng\pngwio.c">
+      <Filter>SDK\libpng</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\sdk\libpng\pngrutil.c">
+      <Filter>SDK\libpng</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\sdk\zlib\adler32.c">
+      <Filter>SDK\zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\sdk\zlib\compress.c">
+      <Filter>SDK\zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\sdk\zlib\crc32.c">
+      <Filter>SDK\zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\sdk\zlib\deflate.c">
+      <Filter>SDK\zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\sdk\zlib\gzclose.c">
+      <Filter>SDK\zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\sdk\zlib\gzlib.c">
+      <Filter>SDK\zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\sdk\zlib\gzread.c">
+      <Filter>SDK\zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\sdk\zlib\gzwrite.c">
+      <Filter>SDK\zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\sdk\zlib\infback.c">
+      <Filter>SDK\zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\sdk\zlib\inffast.c">
+      <Filter>SDK\zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\sdk\zlib\inflate.c">
+      <Filter>SDK\zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\sdk\zlib\inftrees.c">
+      <Filter>SDK\zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\sdk\zlib\trees.c">
+      <Filter>SDK\zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\sdk\zlib\uncompr.c">
+      <Filter>SDK\zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\sdk\zlib\zutil.c">
+      <Filter>SDK\zlib</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -199,37 +301,91 @@
       <Filter>Standard</Filter>
     </ClInclude>
     <ClInclude Include="..\..\sdk\imgui\imconfig.h">
-      <Filter>Imgui</Filter>
+      <Filter>SDK\imgui</Filter>
     </ClInclude>
     <ClInclude Include="..\..\sdk\imgui\imgui.h">
-      <Filter>Imgui</Filter>
+      <Filter>SDK\imgui</Filter>
     </ClInclude>
     <ClInclude Include="..\..\sdk\imgui\imgui_internal.h">
-      <Filter>Imgui</Filter>
+      <Filter>SDK\imgui</Filter>
     </ClInclude>
     <ClInclude Include="..\..\sdk\imgui\imstb_rectpack.h">
-      <Filter>Imgui</Filter>
+      <Filter>SDK\imgui</Filter>
     </ClInclude>
     <ClInclude Include="..\..\sdk\imgui\imstb_textedit.h">
-      <Filter>Imgui</Filter>
+      <Filter>SDK\imgui</Filter>
     </ClInclude>
     <ClInclude Include="..\..\sdk\imgui\imstb_truetype.h">
-      <Filter>Imgui</Filter>
+      <Filter>SDK\imgui</Filter>
     </ClInclude>
     <ClInclude Include="..\..\sdk\imgui\backends\imgui_impl_win32.h">
-      <Filter>Imgui\backends</Filter>
+      <Filter>SDK\imgui\backends</Filter>
     </ClInclude>
     <ClInclude Include="..\..\sdk\imgui\backends\imgui_impl_dx9.h">
-      <Filter>Imgui\backends</Filter>
+      <Filter>SDK\imgui\backends</Filter>
     </ClInclude>
     <ClInclude Include="..\..\sdk\imgui\misc\cpp\imgui_stdlib.h">
-      <Filter>Imgui\misc</Filter>
+      <Filter>SDK\imgui\misc</Filter>
     </ClInclude>
     <ClInclude Include="Source\app.h">
       <Filter>Source</Filter>
     </ClInclude>
     <ClInclude Include="..\..\mstd-lib\std_text.h">
       <Filter>Standard</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\sdk\libpng\png.h">
+      <Filter>SDK\libpng</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\sdk\libpng\pngconf.h">
+      <Filter>SDK\libpng</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\sdk\libpng\pngdebug.h">
+      <Filter>SDK\libpng</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\sdk\libpng\pnginfo.h">
+      <Filter>SDK\libpng</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\sdk\libpng\pnglibconf.h">
+      <Filter>SDK\libpng</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\sdk\libpng\pngpriv.h">
+      <Filter>SDK\libpng</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\sdk\libpng\pngstruct.h">
+      <Filter>SDK\libpng</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\sdk\zlib\zutil.h">
+      <Filter>SDK\zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\sdk\zlib\crc32.h">
+      <Filter>SDK\zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\sdk\zlib\deflate.h">
+      <Filter>SDK\zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\sdk\zlib\gzguts.h">
+      <Filter>SDK\zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\sdk\zlib\inffast.h">
+      <Filter>SDK\zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\sdk\zlib\inffixed.h">
+      <Filter>SDK\zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\sdk\zlib\inflate.h">
+      <Filter>SDK\zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\sdk\zlib\inftrees.h">
+      <Filter>SDK\zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\sdk\zlib\trees.h">
+      <Filter>SDK\zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\sdk\zlib\zconf.h">
+      <Filter>SDK\zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\sdk\zlib\zlib.h">
+      <Filter>SDK\zlib</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -252,5 +408,22 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="..\..\sdk\zlib\README">
+      <Filter>SDK\zlib</Filter>
+    </None>
+    <None Include="..\..\sdk\zlib\LICENSE">
+      <Filter>SDK\zlib</Filter>
+    </None>
+    <None Include="..\..\sdk\libpng\LICENSE">
+      <Filter>SDK\libpng</Filter>
+    </None>
+    <None Include="..\..\sdk\libpng\README">
+      <Filter>SDK\libpng</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="..\..\sdk\imgui\LICENSE.txt">
+      <Filter>SDK\imgui</Filter>
+    </Text>
   </ItemGroup>
 </Project>

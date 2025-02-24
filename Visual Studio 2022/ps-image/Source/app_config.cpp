@@ -62,82 +62,62 @@ void Global_Application::OpenConfig(void)
 				m_Filename = Args[1];
 			}
 
-			if (Str.ToUpper(Args[0]) == L"B_RAWBPP")
+			if (Str.ToUpper(Args[0]) == L"M_CREATEBPP")
 			{
 				switch (std::stoull(Args[1]))
 				{
 				case 4:
-					b_Raw4bpp = true;
-					b_Raw8bpp = false;
-					b_Raw16bpp = false;
-					b_Raw24bpp = false;
+					m_CreateInfo.Depth = 4;
 					break;
 				case 8:
-					b_Raw4bpp = false;
-					b_Raw8bpp = true;
-					b_Raw16bpp = false;
-					b_Raw24bpp = false;
+					m_CreateInfo.Depth = 8;
 					break;
 				case 16:
 				default:
-					b_Raw4bpp = false;
-					b_Raw8bpp = false;
-					b_Raw16bpp = true;
-					b_Raw24bpp = false;
+					m_CreateInfo.Depth = 16;
 					break;
 				case 24:
-					b_Raw4bpp = false;
-					b_Raw8bpp = false;
-					b_Raw16bpp = false;
-					b_Raw24bpp = true;
+					m_CreateInfo.Depth = 24;
 					break;
 				}
 			}
-			if (Str.ToUpper(Args[0]) == L"B_RAWEXTERNALPIXELS")
+			if (Str.ToUpper(Args[0]) == L"M_CREATEWIDTH")
 			{
-				b_RawExternalPixels = std::stoi(Args[1]);
+				m_CreateInfo.Width = std::stoi(Args[1]);
+				AdjustWidthInput(m_CreateInfo.Width);
 			}
-			if (Str.ToUpper(Args[0]) == L"B_RAWEXTERNALPIXELSFROMTIM")
+			if (Str.ToUpper(Args[0]) == L"M_CREATEHEIGHT")
 			{
-				b_RawExternalPixelsFromTIM = std::stoi(Args[1]);
+				m_CreateInfo.Height = std::stoi(Args[1]);
+				AdjustHeightInput(m_CreateInfo.Height);
 			}
-			if (Str.ToUpper(Args[0]) == L"B_RAWEXTERNALPALETTE")
+			if (Str.ToUpper(Args[0]) == L"M_CREATEPALETTECOUNT")
 			{
-				b_RawExternalPalette = std::stoi(Args[1]);
+				m_CreateInfo.nPalette = std::stoi(Args[1]);
 			}
-			if (Str.ToUpper(Args[0]) == L"B_RAWEXTERNALPALETTEFROMTIM")
+			if (Str.ToUpper(Args[0]) == L"M_CREATEPALETTETYPE")
 			{
-				b_RawExternalPaletteFromTIM = std::stoi(Args[1]);
+				m_CreateInfo.PaletteType = ImageType(std::stoi(Args[1]));
 			}
-			if (Str.ToUpper(Args[0]) == L"M_RAWWIDTH")
+			if (Str.ToUpper(Args[0]) == L"M_CREATEPIXELTYPE")
 			{
-				m_RawWidth = std::stoi(Args[1]);
-				AdjustWidthInput(m_RawWidth);
+				m_CreateInfo.PixelType = ImageType(std::stoi(Args[1]));
 			}
-			if (Str.ToUpper(Args[0]) == L"M_RAWHEIGHT")
+			if (Str.ToUpper(Args[0]) == L"M_CREATEPALETTEPTR")
 			{
-				m_RawHeight = std::stoi(Args[1]);
-				AdjustHeightInput(m_RawHeight);
+				m_CreateInfo.pPalette = std::stoull(Args[1], nullptr, 16);
 			}
-			if (Str.ToUpper(Args[0]) == L"M_RAWPALETTECOUNT")
+			if (Str.ToUpper(Args[0]) == L"M_CREATEPIXELPTR")
 			{
-				m_RawPaletteCount = std::stoi(Args[1]);
+				m_CreateInfo.pPixel = std::stoull(Args[1], nullptr, 16);
 			}
-			if (Str.ToUpper(Args[0]) == L"M_RAWPIXELPTR")
+			if (Str.ToUpper(Args[0]) == L"M_CREATEPALETTEFILENAME")
 			{
-				m_RawPixelPtr = std::stoull(Args[1], nullptr, 16);
+				m_CreateInfo.Palette = Args[1];
 			}
-			if (Str.ToUpper(Args[0]) == L"M_RAWPALETTEPTR")
+			if (Str.ToUpper(Args[0]) == L"M_CREATEPIXELFILENAME")
 			{
-				m_RawPalettePtr = std::stoull(Args[1], nullptr, 16);
-			}
-			if (Str.ToUpper(Args[0]) == L"M_RAWPIXELFILENAME")
-			{
-				m_RawPixelFilename = Args[1];
-			}
-			if (Str.ToUpper(Args[0]) == L"M_RAWPALETTEFILENAME")
-			{
-				m_RawPaletteFilename = Args[1];
+				m_CreateInfo.Pixel = Args[1];
 			}
 
 			if (Str.ToUpper(Args[0]) == L"M_BISTREAMWIDTH")
@@ -231,18 +211,16 @@ void Global_Application::SaveConfig(void)
 
 	Text->AddLine(L"m_Filename\t\"%ws\"\r", m_Filename.wstring().c_str());
 
-	Text->AddLine(L"b_RawBpp\t%d\r", b_Raw4bpp ? 4 : b_Raw8bpp ? 8 : b_Raw16bpp ? 16 : b_Raw24bpp ? 24 : 16);
-	Text->AddLine(L"b_RawExternalPixels\t%d\r", b_RawExternalPixels);
-	Text->AddLine(L"b_RawExternalPixelsFromTIM\t%d\r", b_RawExternalPixelsFromTIM);
-	Text->AddLine(L"b_RawExternalPalette\t%d\r", b_RawExternalPalette);
-	Text->AddLine(L"b_RawExternalPaletteFromTIM\t%d\r", b_RawExternalPaletteFromTIM);
-	Text->AddLine(L"m_RawWidth\t%d\r", m_RawWidth);
-	Text->AddLine(L"m_RawHeight\t%d\r", m_RawHeight);
-	Text->AddLine(L"m_RawPaletteCount\t%d\r", m_RawPaletteCount);
-	Text->AddLine(L"m_RawPixelPtr\t0x%llx\r", m_RawPixelPtr);
-	Text->AddLine(L"m_RawPalettePtr\t0x%llx\r", m_RawPalettePtr);
-	Text->AddLine(L"m_RawPixelFilename\t\"%ws\"\r", m_RawPixelFilename.wstring().c_str());
-	Text->AddLine(L"m_RawPaletteFilename\t\"%ws\"\r", m_RawPaletteFilename.wstring().c_str());
+	Text->AddLine(L"m_CreateBpp\t%d\r", m_CreateInfo.Depth);
+	Text->AddLine(L"m_CreateWidth\t%d\r", m_CreateInfo.Width);
+	Text->AddLine(L"m_CreateHeight\t%d\r", m_CreateInfo.Height);
+	Text->AddLine(L"m_CreatePaletteCount\t%d\r", m_CreateInfo.nPalette);
+	Text->AddLine(L"m_CreatePaletteType\t%d\r", std::to_underlying(m_CreateInfo.PaletteType));
+	Text->AddLine(L"m_CreatePixelType\t%d\r", std::to_underlying(m_CreateInfo.PixelType));
+	Text->AddLine(L"m_CreatePalettePtr\t0x%x\r", m_CreateInfo.pPalette);
+	Text->AddLine(L"m_CreatePixelPtr\t0x%x\r", m_CreateInfo.pPixel);
+	Text->AddLine(L"m_CreatePaletteFilename\t\"%ws\"\r", m_CreateInfo.Palette.wstring().c_str());
+	Text->AddLine(L"m_CreatePixelFilename\t\"%ws\"\r", m_CreateInfo.Pixel.wstring().c_str());
 
 	Text->AddLine(L"m_BistreamWidth\t%d\r", m_BistreamWidth);
 	Text->AddLine(L"m_BistreamHeight\t%d\r", m_BistreamHeight);

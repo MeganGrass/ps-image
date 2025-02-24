@@ -7,3 +7,9 @@
 [submodule "sony-lib"]
 	path = sony-lib
 	url = https://github.com/MeganGrass/sony-lib
+[submodule "sdk/libjpeg-turbo"]
+	path = sdk/libjpeg-turbo
+	url = https://github.com/libjpeg-turbo/libjpeg-turbo
+[submodule "sdk/libpng"]
+	path = sdk/libpng
+	url = https://github.com/pnggroup/libpng

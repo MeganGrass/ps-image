@@ -91,7 +91,7 @@ bool Global_Application::ScrollOnHover(void* Input, ImGuiDataType DataType, std:
 				b_Add ? *(bool*)Input = true : *(bool*)Input = false;
 			}
 
-			std::this_thread::sleep_for(std::chrono::milliseconds(50));
+			std::this_thread::sleep_for(std::chrono::milliseconds(25));
 
 			return true;
 		}
@@ -139,7 +139,7 @@ bool Global_Application::ScrollFloatOnHover(void* Input, ImGuiDataType DataType,
 void Global_Application::AdjustWidthInput(std::uint16_t& Width)
 {
 	std::uint16_t MinWidth = 1;
-	if (b_Raw4bpp || (m_Texture && Texture().GetDepth() == 4))
+	if (m_CreateInfo.Depth == 4 || (m_Texture && Texture().GetDepth() == 4))
 	{
 		if (Width % 4)
 		{
@@ -147,7 +147,7 @@ void Global_Application::AdjustWidthInput(std::uint16_t& Width)
 		}
 		MinWidth = 4;
 	}
-	else if (b_Raw8bpp || (m_Texture && Texture().GetDepth() == 8))
+	else if (m_CreateInfo.Depth == 8 || (m_Texture && Texture().GetDepth() == 8))
 	{
 		if (Width % 2)
 		{
