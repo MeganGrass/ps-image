@@ -78,7 +78,7 @@ Any resolution supported ([640x480](https://en.wikipedia.org/wiki/PlayStation_te
 Bitstreams images are decoded to 32bpp raster data
 
 ## VRAM
-Preliminary support for modifying both CLUT and Pixel coordinates is available (_"File"_ window right-click for pixels, _"Palette"_ window for palette)
+Preliminary support for modifying both CLUT and Pixel coordinates is available in _"File Properties"_ window
 
 Preview is not available
 
@@ -113,8 +113,8 @@ Preview is not available
 - VRAM features
 - Multi-file support
 - (?) Mixed Mode support
-- (?) Sony PlayStation Bitstream (*.BS) creation
-- (?) Sony PlayStation Texture Model (*.TMD) support
+- (?) Sony PlayStation Bitstream (.BS) creation
+- (?) Sony PlayStation Texture Model (.TMD) support
 
 ## Build
 - [Microsoft Visual Studio](https://visualstudio.microsoft.com) 2022+
@@ -132,7 +132,7 @@ git clone https://github.com/MeganGrass/ps-image.git
 
 [Dither Matrix](https://psx-spx.consoledev.net/graphicsprocessingunitgpu/#24bit-rgb-to-15bit-rgb-dithering-enabled-in-texpage-attribute)
 
-[CLT and PXL file headers](https://problemkaputt.de/psxspx-cdrom-file-video-texture-image-tim-pxl-clt-sony.htm)
+[CLT and PXL file](https://problemkaputt.de/psxspx-cdrom-file-video-texture-image-tim-pxl-clt-sony.htm)
 
 [PSX.dev (Discord)](https://discord.com/invite/psx-dev-642647820683444236)
 
