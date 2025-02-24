@@ -1240,8 +1240,10 @@ void Global_Application::CreateModal(void)
 		bool b_PaletteRaw = (std::to_underlying(m_CreateInfo.PaletteType) & (std::to_underlying(ImageType::RAW)));
 		bool b_PaletteTIM = (std::to_underlying(m_CreateInfo.PaletteType) & (std::to_underlying(ImageType::TIM)));
 		bool b_PaletteCLT = (std::to_underlying(m_CreateInfo.PaletteType) & (std::to_underlying(ImageType::CLT)));
+		bool b_PaletteBMP = (std::to_underlying(m_CreateInfo.PaletteType) & (std::to_underlying(ImageType::BMP)));
 		bool b_PalettePAL = (std::to_underlying(m_CreateInfo.PaletteType) & (std::to_underlying(ImageType::PAL)));
-		bool b_PaletteNone = (b_PaletteRaw || b_PaletteTIM || b_PaletteCLT || b_PalettePAL) ? false : true;
+		bool b_PalettePNG = (std::to_underlying(m_CreateInfo.PaletteType) & (std::to_underlying(ImageType::PNG)));
+		bool b_PaletteNone = (b_PaletteRaw || b_PaletteTIM || b_PaletteCLT || b_PaletteBMP || b_PalettePAL || b_PalettePNG) ? false : true;
 
 		bool b_PixelsRaw = (std::to_underlying(m_CreateInfo.PixelType) & (std::to_underlying(ImageType::RAW)));
 		bool b_PixelsTIM = (std::to_underlying(m_CreateInfo.PixelType) & (std::to_underlying(ImageType::TIM)));
@@ -1417,11 +1419,7 @@ void Global_Application::CreateModal(void)
 					Tooltip(Str.FormatCStyle("Read raw pixel data (0x%llx bytes) at 0x%llx in \"%ws\"", (Width * m_CreateInfo.Height), m_CreateInfo.pPixel, m_CreateInfo.Pixel.filename().wstring().c_str()));
 				}
 					break;
-				case 2:
-				case 3:
-				case 4:
-				case 5:
-				case 6:
+				default:
 					Tooltip(Str.FormatCStyle("Read \"%s\" file type at 0x%llx in \"%ws\"", PixelFileTypes[iFileType], m_CreateInfo.pPixel, m_CreateInfo.Pixel.filename().wstring().c_str()));
 					break;
 				}
@@ -1479,7 +1477,7 @@ void Global_Application::CreateModal(void)
 			}
 
 			{
-				uint32_t iFileType = b_PaletteNone ? 0 : b_PaletteRaw ? 1 : b_PaletteTIM ? 2 : b_PaletteCLT ? 3 : b_PalettePAL ? 4 : 0;
+				uint32_t iFileType = b_PaletteNone ? 0 : b_PaletteRaw ? 1 : b_PaletteTIM ? 2 : b_PaletteCLT ? 3 : b_PaletteBMP ? 4 : b_PalettePAL ? 5 : b_PalettePNG ? 6 : 0;
 
 				ImGui::SetNextItemWidth(ItemWidth);
 
@@ -1537,9 +1535,7 @@ void Global_Application::CreateModal(void)
 						m_CreateInfo.Depth == 4 ? (m_CreateInfo.nPalette * 0x20) : (m_CreateInfo.nPalette * 0x200),
 						m_CreateInfo.pPalette, m_CreateInfo.Palette.filename().wstring().c_str()));
 					break;
-				case 2:
-				case 3:
-				case 4:
+				default:
 					Tooltip(Str.FormatCStyle("Read \"%s\" file type at %llx in \"%ws\"", PaletteFileTypes[iFileType], m_CreateInfo.pPalette, m_CreateInfo.Palette.filename().wstring().c_str()));
 					break;
 				}
