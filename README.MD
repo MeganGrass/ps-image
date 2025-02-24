@@ -2,8 +2,14 @@
 Multi-purpose utility application for Sony PlayStation (PS1/PSone) textures and images
 
 ## Supported File Formats
-- Sony PlayStation Texture Image (*.TIM) *(4bpp, 8bpp, 16bpp and 24bpp)*
-- Sony PlayStation Bitstream (*.BS) *(Version 1/2)*
+- Sony PlayStation Texture Image (.TIM) *(4bpp, 8bpp, 16bpp and 24bpp)*
+- Sony PlayStation Texture CLUT (.CLT) *(16bpp colors)*
+- Sony PlayStation Texture Pixels (.PXL) *(4bpp, 8bpp, 16bpp and 24bpp)*
+- Sony PlayStation Bitstream (.BS) *(Version 1/2)*
+- Bitmap Graphic (.BMP) *(4bpp/8bpp palette, 16-bit high color and 24bpp/32bpp A/RGB)*
+- Microsoft RIFF Palette (.PAL) *(32bpp ARGB palette)*
+- Portable Network Graphics (.PNG) *(4bpp/8bpp palette and 24bpp/32bpp A/RGB)*
+- Joint Photographic Experts Group (.JPG)
 
 ## Accessibility Features
 - DPI Awareness
@@ -20,23 +26,34 @@ Multi-purpose utility application for Sony PlayStation (PS1/PSone) textures and 
 ##### **File Open Modal + Drag-n-Drop + Commandline**
 - Automatically scan any file for PlayStation Texture Images
 ##### **File Conversion**
-- Convert images to Bitmap Graphic (*.BMP) format
-- Color depth is retained in conversion
+- Import and export supplemental file types (BMP, PNG, etc.)
+
+(*) Palette colors from supplemental formats are converted from 24-bit (8:8:8) to 15-bit (5:5:5) on import (vice-versa on export)
+
+(*) Color depth (bits per pixel) is not modified on export
 
 ## Advanced Features
 ##### **File Creation**
 - Create and save new PlayStation Texture Images
-- Import/Export pixel and/or palette data to/from any file (RAW)
-- Import/Export pixel and/or palette data to/from PlayStation Texture Images
+- Import and export raw data from any file, pixel and/or palette data for all supported file types
+
 ##### **File Modifier**
-- Replace/Extract PlayStation Texture Images to/from any file type
-##### **Semi/Transparency**
-- Preview any PlayStation Texture Image with basic semi/fully transparency effects (optional)
-- Preview any color separate from palette as semi/fully transparent (CLUT not required)
-- Superblack support, where solid black pixels are fully transparent
-- Superimposed support, where colors at palette index 0 are fully transparent (CLUT required)
-- Transparency Control Bit (STP) support for Half (50%back + 50%texture), Full (100%back + 100%texture), Inverse (100%back - 100%texture) and Quarter (100%back + 25%texture) modes
+- Import and export PlayStation Texture Images to/from any file type
+##### **Semi-Transparency Processing**
+- Preview any PlayStation Texture Image with basic semi-transparency effects (optional)
+- Preview any color separate from palette as semi-transparent (CLUT not required)
+- Superblack support: solid black pixels (5:5:5:1/8:8:8) are completely transparent
+- Superimposed support: color at palette index 0 is semi-transparent (CLUT required)
+- Transparency Control Bit (STP) support
+- Semi-Transparency Rate (ABR) support
 - All bit depth modes supported (4bpp, 8bpp, 16bpp and 24bpp)
+| Rate | Description                       |
+| :-------- | :-------------------------------- |
+| `Half` | 50%back + 50%texture |
+| `Full` | 100%back + 100%texture |
+| `Inverse` | 100%back - 100%texture |
+| `Quarter` | 100%back + 25%texture |
+
 ##### **Dither**
 - Preview textures as they would appear on a real Sony PlayStation (1994) with a built-in [Dithering Filter](https://en.wikipedia.org/wiki/Dither) (optional)
 ##### **Filter**
@@ -44,11 +61,13 @@ Multi-purpose utility application for Sony PlayStation (PS1/PSone) textures and 
 
 ## Texture Modification
 ##### **Color Lookup Table (CLUT)**
-- Modify and preview any palette in real-time
+- Modify and preview multiple palettes in real-time
 - Add, Insert, Delete, Move, Copy and Paste entire palettes
-- Palettes are [15-bit](https://en.wikipedia.org/wiki/High_color) high color [indexes](https://en.wikipedia.org/wiki/Indexed_color) with [transparency](https://en.wikipedia.org/wiki/Palette_(computing)#Transparency_in_palettes) support
-- 4bpp *(16 color palette)* and  8bpp/16bpp/24bpp *(256 color palette)* modes supported
-- Microsoft RIFF Palette (*.PAL) support
+- Palettes are [15-bit](https://en.wikipedia.org/wiki/High_color) high color [indexes](https://en.wikipedia.org/wiki/Indexed_color) with [semi/transparency](https://en.wikipedia.org/wiki/Palette_(computing)#Transparency_in_palettes) support (5:5:5:1)
+- 4bpp *(16 color palette)* and 8bpp *(256 color palette)* modes supported
+
+##### **Pixels**
+- Enable or disable semi-transparency (STP flag) for individual palette colors and pixels (4bpp, 8bpp and 16bpp only)
 
 ## Bitstream Images
 Support for Bitstream images is extremely limited, with only decoding support being reserved for future features
@@ -92,7 +111,6 @@ Preview is not available
 - Blit functions
 - VRAM features
 - Multi-file support
-- File import (*.BMP, *.PNG, etc.)
 - (?) Mixed Mode support
 - (?) Sony PlayStation Bitstream (*.BS) creation
 - (?) Sony PlayStation Texture Model (*.TMD) support
@@ -100,7 +118,10 @@ Preview is not available
 ## Build
 - [Microsoft Visual Studio](https://visualstudio.microsoft.com) 2022+
 - [Microsoft Direct-X](https://www.nuget.org/packages/Microsoft.DXSDK.D3DX)
-- Clone the repo, install *Microsoft.DXSDK.D3DX* nuget package into the project and build
+- Clone the repo
+- Install *Microsoft.DXSDK.D3DX* nuget package into the project
+- Build/Link libjpeg-turbo libraries
+- Compile
 ```
 git clone https://github.com/MeganGrass/ps-image.git
 ```
@@ -110,6 +131,10 @@ git clone https://github.com/MeganGrass/ps-image.git
 
 [Dither Matrix](https://psx-spx.consoledev.net/graphicsprocessingunitgpu/#24bit-rgb-to-15bit-rgb-dithering-enabled-in-texpage-attribute)
 
+[CLT and PXL file headers](https://problemkaputt.de/psxspx-cdrom-file-video-texture-image-tim-pxl-clt-sony.htm)
+
+[PSX.dev (Discord)](https://discord.com/invite/psx-dev-642647820683444236)
+
 
 ## Copyrights
 Sony PlayStation is Copyright (©) [Sony Computer Entertainment Inc.](https://sonyinteractive.com/)
@@ -117,3 +142,9 @@ Sony PlayStation is Copyright (©) [Sony Computer Entertainment Inc.](https://so
 [ImGui](https://github.com/ocornut/imgui) is Copyright (©) 2014-2025 Omar Cornut
 
 [Direct-X](https://learn.microsoft.com/en-us/windows/win32/directx) is Copyright (©) 1995-2021 Microsoft Corporation
+
+[libjpeg-turbo](https://github.com/libjpeg-turbo/libjpeg-turbo)
+
+[libpng](https://github.com/pnggroup/libpng)
+
+[zlib](https://github.com/madler/zlib)
