@@ -47,6 +47,7 @@ Multi-purpose utility application for Sony PlayStation (PS1/PSone) textures and 
 - Transparency Control Bit (STP) support
 - Semi-Transparency Rate (ABR) support
 - All bit depth modes supported (4bpp, 8bpp, 16bpp and 24bpp)
+
 | Rate | Description                       |
 | :-------- | :-------------------------------- |
 | `Half` | 50%back + 50%texture |
