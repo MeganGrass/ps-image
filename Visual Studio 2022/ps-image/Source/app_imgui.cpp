@@ -67,7 +67,7 @@ void Global_Application::MainMenu(void)
 					TextureIO(ImageIO::SaveMultiNew | ImageIO::All, NULL, m_Palette, ImageType::PNG);
 				}
 #endif
-#ifdef LIB_JPG
+#ifdef LIB_JPEG
 				if (ImGui::MenuItem("JPG##FileMenuSaveAs"))
 				{
 					TextureIO(ImageIO::SaveMultiNew | ImageIO::All, NULL, m_Palette, ImageType::JPG);
@@ -1246,8 +1246,14 @@ void Global_Application::CreateModal(void)
 		bool b_PaletteCLT = (std::to_underlying(m_CreateInfo.PaletteType) & (std::to_underlying(ImageType::CLT)));
 		bool b_PaletteBMP = (std::to_underlying(m_CreateInfo.PaletteType) & (std::to_underlying(ImageType::BMP)));
 		bool b_PalettePAL = (std::to_underlying(m_CreateInfo.PaletteType) & (std::to_underlying(ImageType::PAL)));
+#ifdef LIB_PNG
 		bool b_PalettePNG = (std::to_underlying(m_CreateInfo.PaletteType) & (std::to_underlying(ImageType::PNG)));
-		bool b_PaletteNone = (b_PaletteRaw || b_PaletteTIM || b_PaletteCLT || b_PaletteBMP || b_PalettePAL || b_PalettePNG) ? false : true;
+#endif
+		bool b_PaletteNone = (b_PaletteRaw || b_PaletteTIM || b_PaletteCLT || b_PaletteBMP || b_PalettePAL
+#ifdef LIB_PNG
+			|| b_PalettePNG
+#endif
+			) ? false : true;
 
 		bool b_PixelsRaw = (std::to_underlying(m_CreateInfo.PixelType) & (std::to_underlying(ImageType::RAW)));
 		bool b_PixelsTIM = (std::to_underlying(m_CreateInfo.PixelType) & (std::to_underlying(ImageType::TIM)));
@@ -1256,14 +1262,14 @@ void Global_Application::CreateModal(void)
 #ifdef LIB_PNG
 		bool b_PixelsPNG = (std::to_underlying(m_CreateInfo.PixelType) & (std::to_underlying(ImageType::PNG)));
 #endif
-#ifdef LIB_JPG
+#ifdef LIB_JPEG
 		bool b_PixelsJPG = (std::to_underlying(m_CreateInfo.PixelType) & (std::to_underlying(ImageType::JPG)));
 #endif
 		bool b_PixelsNone = (b_PixelsRaw || b_PixelsTIM || b_PixelsPXL || b_PixelsBMP
 #ifdef LIB_PNG
 			|| b_PixelsPNG
 #endif
-#ifdef LIB_JPG
+#ifdef LIB_JPEG
 			|| b_PixelsJPG
 #endif
 			) ? false : true;
@@ -1361,7 +1367,7 @@ void Global_Application::CreateModal(void)
 #ifdef LIB_PNG
 					: b_PixelsPNG ? 5
 #endif
-#ifdef LIB_JPG
+#ifdef LIB_JPEG
 					: b_PixelsJPG ? 6
 #endif
 					: 0;
@@ -1401,7 +1407,7 @@ void Global_Application::CreateModal(void)
 								m_CreateInfo.PixelType = ImageType::PNG;
 								break;
 #endif
-#ifdef LIB_JPG
+#ifdef LIB_JPEG
 							case 6:
 								m_CreateInfo.PixelType = ImageType::JPG;
 								break;
@@ -1503,7 +1509,11 @@ void Global_Application::CreateModal(void)
 			}
 
 			{
-				uint32_t iFileType = b_PaletteNone ? 0 : b_PaletteRaw ? 1 : b_PaletteTIM ? 2 : b_PaletteCLT ? 3 : b_PaletteBMP ? 4 : b_PalettePAL ? 5 : b_PalettePNG ? 6 : 0;
+				uint32_t iFileType = b_PaletteNone ? 0 : b_PaletteRaw ? 1 : b_PaletteTIM ? 2 : b_PaletteCLT ? 3 : b_PaletteBMP ? 4 : b_PalettePAL ? 5
+#ifdef LIB_PNG
+					: b_PalettePNG ? 6
+#endif
+					: 0;
 
 				ImGui::SetNextItemWidth(ItemWidth);
 
@@ -1538,9 +1548,11 @@ void Global_Application::CreateModal(void)
 							case 5:
 								m_CreateInfo.PaletteType = ImageType::PAL;
 								break;
+#ifdef LIB_PNG
 							case 6:
 								m_CreateInfo.PaletteType = ImageType::PNG;
 								break;
+#endif
 							}
 						}
 						if (b_IsSelected)

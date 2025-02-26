@@ -373,7 +373,7 @@ void Global_Application::TextureIO(std::filesystem::path Filename, ImageIO Flags
 #ifdef LIB_PNG
 	!b_SupportedSaveType ? b_SupportedSaveType = std::to_underlying(SaveAllType) & std::to_underlying(ImageType::PNG) : false;
 #endif
-#ifdef LIB_JPG
+#ifdef LIB_JPEG
 	!b_SupportedSaveType ? b_SupportedSaveType = std::to_underlying(SaveAllType) & std::to_underlying(ImageType::JPG) : false;
 #endif
 
@@ -441,7 +441,7 @@ void Global_Application::TextureIO(std::filesystem::path Filename, ImageIO Flags
 							Directory / This->Str.FormatCStyle(L"%ws_%04d_0x%08llx.png", This->m_Filename.stem().wstring().c_str(), iCnt, This->File()[iCnt].first), NULL, iPalette, b_Truncate);
 					}
 #endif
-#ifdef LIB_JPG
+#ifdef LIB_JPEG
 					if (std::to_underlying(SaveAllType) & std::to_underlying(ImageType::JPG))
 					{
 						std::make_unique<Sony_PlayStation_Texture>(This->m_Filename, (size_t)This->File()[iCnt].first)->SaveJPG(
@@ -492,7 +492,7 @@ void Global_Application::TextureIO(std::filesystem::path Filename, ImageIO Flags
 #ifdef LIB_PNG
 			if (m_FileExt == L".PNG" && !External->SavePNG(Filename, pSource, iPalette, b_Truncate)) { return; }
 #endif
-#ifdef LIB_JPG
+#ifdef LIB_JPEG
 			if ((m_FileExt == L".JPG" || m_FileExt == L".JPEG") && !External->SaveJPG(Filename, pSource, iPalette, b_Truncate)) { return; }
 #endif
 
@@ -526,7 +526,7 @@ void Global_Application::TextureIO(std::filesystem::path Filename, ImageIO Flags
 #ifdef LIB_PNG
 	if (m_FileExt == L".PNG" && !External->OpenPNG(Filename, pSource)) { return; }
 #endif
-#ifdef LIB_JPG
+#ifdef LIB_JPEG
 	if ((m_FileExt == L".JPG" || m_FileExt == L".JPEG") && !External->OpenJPG(Filename, pSource)) { return; }
 #endif
 
