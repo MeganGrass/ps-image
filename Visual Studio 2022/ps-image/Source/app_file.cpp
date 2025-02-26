@@ -73,7 +73,7 @@ void Global_Application::SetPalette(std::uint16_t iPalette)
 
 	m_Palette = std::clamp((iPalette > m_Texture->GetPaletteCount()) ? (uint16_t)0 : iPalette, (uint16_t)0, Texture().GetPaletteMaxIndex());
 
-	ResetTexture();
+	b_RequestTextureReset = true;
 }
 
 void Global_Application::SetTexture(std::size_t iFile)
@@ -92,7 +92,7 @@ void Global_Application::SetTexture(std::size_t iFile)
 
 	m_Texture->OpenTIM(m_Filename, File()[m_SelectedFile].first);
 
-	ResetTexture();
+	b_RequestTextureReset = true;
 }
 
 void Global_Application::Search(std::filesystem::path Filename)
@@ -167,7 +167,7 @@ bool Global_Application::Create(void)
 
 	if (!m_Texture->OpenTIM(External)) { Close(); return false; }
 
-	ResetTexture();
+	b_RequestTextureReset = true;
 
 	return true;
 }
@@ -183,7 +183,7 @@ void Global_Application::MovePalette(std::uint16_t iPalette, bool Right)
 		if (Right) { ++m_Palette; }
 		else if (m_Palette) { --m_Palette; }
 
-		if (OldPalette != m_Palette) { ResetTexture(); }
+		if (OldPalette != m_Palette) { b_RequestTextureReset = true; }
 	}
 }
 
@@ -196,7 +196,7 @@ void Global_Application::CopyPalette(void)
 void Global_Application::PastePalette(void)
 {
 	if (!m_Texture || ClipboardPalette.empty()) { return; }
-	if (Texture().PastePalette(ClipboardPalette, m_Palette)) { ResetTexture(); }
+	if (Texture().PastePalette(ClipboardPalette, m_Palette)) { b_RequestTextureReset = true; }
 }
 
 void Global_Application::AddPalette(void)
@@ -204,14 +204,14 @@ void Global_Application::AddPalette(void)
 	if (!m_Texture) { return; }
 	Texture().AddPalette();
 	m_Palette = std::clamp(Texture().GetPaletteMaxIndex(), (uint16_t)0, Texture().GetPaletteMaxIndex());
-	ResetTexture();
+	b_RequestTextureReset = true;
 }
 
 void Global_Application::InsertPalette(void)
 {
 	if (!m_Texture) { return; }
 	Texture().InsertPalette(++m_Palette);
-	ResetTexture();
+	b_RequestTextureReset = true;
 }
 
 void Global_Application::DeletePalette(std::uint16_t iPalette, bool b_All)
@@ -220,7 +220,7 @@ void Global_Application::DeletePalette(std::uint16_t iPalette, bool b_All)
 	if (Texture().DeletePalette(iPalette, b_All))
 	{
 		if (m_Palette) { --m_Palette; }
-		ResetTexture();
+		b_RequestTextureReset = true;
 	}
 }
 
@@ -229,7 +229,7 @@ void Global_Application::DeletePixels(void)
 	if (!m_Texture) { return; }
 	Texture().SetWidth(0);
 	Texture().SetHeight(0);
-	ResetTexture();
+	b_RequestTextureReset = true;
 }
 
 void Global_Application::SetExternalPaletteFilename(void)
@@ -336,7 +336,7 @@ void Global_Application::RawIO(std::filesystem::path Filename, ImageIO Flags, st
 
 		b_ImageOnDisk = false;
 
-		ResetTexture();
+		b_RequestTextureReset = true;
 
 		return;
 	}
@@ -370,8 +370,12 @@ void Global_Application::TextureIO(std::filesystem::path Filename, ImageIO Flags
 	!b_SupportedSaveType ? b_SupportedSaveType = std::to_underlying(SaveAllType) & std::to_underlying(ImageType::PXL) : false;
 	!b_SupportedSaveType ? b_SupportedSaveType = std::to_underlying(SaveAllType) & std::to_underlying(ImageType::BMP) : false;
 	!b_SupportedSaveType ? b_SupportedSaveType = std::to_underlying(SaveAllType) & std::to_underlying(ImageType::PAL) : false;
+#ifdef LIB_PNG
 	!b_SupportedSaveType ? b_SupportedSaveType = std::to_underlying(SaveAllType) & std::to_underlying(ImageType::PNG) : false;
+#endif
+#ifdef LIB_JPG
 	!b_SupportedSaveType ? b_SupportedSaveType = std::to_underlying(SaveAllType) & std::to_underlying(ImageType::JPG) : false;
+#endif
 
 	bool b_KnownFileExt = false;
 	!b_KnownFileExt ? b_KnownFileExt = (m_FileExt == L".TIM") ? true : false : false;
@@ -430,16 +434,20 @@ void Global_Application::TextureIO(std::filesystem::path Filename, ImageIO Flags
 						std::make_unique<Sony_PlayStation_Texture>(This->m_Filename, (size_t)This->File()[iCnt].first)->SavePAL(
 							Directory / This->Str.FormatCStyle(L"%ws_%04d_0x%08llx.pal", This->m_Filename.stem().wstring().c_str(), iCnt, This->File()[iCnt].first), NULL, b_Truncate);
 					}
+#ifdef LIB_PNG
 					if (std::to_underlying(SaveAllType) & std::to_underlying(ImageType::PNG))
 					{
 						std::make_unique<Sony_PlayStation_Texture>(This->m_Filename, (size_t)This->File()[iCnt].first)->SavePNG(
 							Directory / This->Str.FormatCStyle(L"%ws_%04d_0x%08llx.png", This->m_Filename.stem().wstring().c_str(), iCnt, This->File()[iCnt].first), NULL, iPalette, b_Truncate);
 					}
+#endif
+#ifdef LIB_JPG
 					if (std::to_underlying(SaveAllType) & std::to_underlying(ImageType::JPG))
 					{
 						std::make_unique<Sony_PlayStation_Texture>(This->m_Filename, (size_t)This->File()[iCnt].first)->SaveJPG(
 							Directory / This->Str.FormatCStyle(L"%ws_%04d_0x%08llx.jpg", This->m_Filename.stem().wstring().c_str(), iCnt, This->File()[iCnt].first), NULL, iPalette, b_Truncate);
 					}
+#endif
 
 					This->m_ProgressBar = ((float)(iCnt * 100) / (float)This->m_Files.size()) / 100.0f;
 				}
@@ -481,8 +489,12 @@ void Global_Application::TextureIO(std::filesystem::path Filename, ImageIO Flags
 			if (m_FileExt == L".PXL" && !External->SavePXL(Filename, pSource, b_Truncate)) { return; }
 			if (m_FileExt == L".BMP" && !External->SaveBMP(Filename, pSource, iPalette, b_Truncate)) { return; }
 			if (m_FileExt == L".PAL" && !External->SavePAL(Filename, pSource, b_Truncate)) { return; }
+#ifdef LIB_PNG
 			if (m_FileExt == L".PNG" && !External->SavePNG(Filename, pSource, iPalette, b_Truncate)) { return; }
+#endif
+#ifdef LIB_JPG
 			if ((m_FileExt == L".JPG" || m_FileExt == L".JPEG") && !External->SaveJPG(Filename, pSource, iPalette, b_Truncate)) { return; }
+#endif
 
 			if (b_OpenOnComplete)
 			{
@@ -511,8 +523,12 @@ void Global_Application::TextureIO(std::filesystem::path Filename, ImageIO Flags
 	if (m_FileExt == L".BS" && !External->OpenBS(Filename, pSource, m_BistreamWidth, m_BistreamHeight)) { return; }
 	if (m_FileExt == L".BMP" && !External->OpenBMP(Filename, pSource)) { return; }
 	if (m_FileExt == L".PAL" && !External->OpenPAL(Filename, pSource)) { return; }
+#ifdef LIB_PNG
 	if (m_FileExt == L".PNG" && !External->OpenPNG(Filename, pSource)) { return; }
+#endif
+#ifdef LIB_JPG
 	if ((m_FileExt == L".JPG" || m_FileExt == L".JPEG") && !External->OpenJPG(Filename, pSource)) { return; }
+#endif
 
 	if (!b_Palette) { External->DeletePalette(NULL, true); }
 
@@ -616,7 +632,7 @@ void Global_Application::TextureIO(std::filesystem::path Filename, ImageIO Flags
 
 		b_ImageOnDisk = false;
 
-		ResetTexture();
+		b_RequestTextureReset = true;
 
 		return;
 	}
@@ -636,7 +652,7 @@ void Global_Application::TextureIO(std::filesystem::path Filename, ImageIO Flags
 
 		m_Files.resize(1);
 
-		ResetTexture();
+		b_RequestTextureReset = true;
 	}
 }
 

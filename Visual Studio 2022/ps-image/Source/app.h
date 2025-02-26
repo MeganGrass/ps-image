@@ -78,11 +78,11 @@ private:
 
 	bool b_ImageOnDisk;
 
-	bool b_ResetTextureRequested;
+	bool b_RequestTextureReset;
+	bool b_RequestFontChange;
 
 	float m_FontSizeMin;
 	float m_FontSizeMax;
-	bool b_FontChangeRequested;
 
 	float m_ImageZoomMin;
 	float m_ImageZoomMax;
@@ -202,8 +202,8 @@ public:
 		m_Palette(0),
 		m_MousePixelX(0),
 		m_MousePixelY(0),
-		b_FontChangeRequested(false),
-		b_ResetTextureRequested(false),
+		b_RequestFontChange(false),
+		b_RequestTextureReset(false),
 		m_CreateInfo(),
 		ClipboardColor(0),
 		ClipboardPalette(),

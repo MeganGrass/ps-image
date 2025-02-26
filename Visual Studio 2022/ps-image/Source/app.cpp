@@ -70,9 +70,16 @@ void Global_Application::Draw(void)
 {
 	if (!Context || !Render->NormalState()) { return; }
 
-	if (b_FontChangeRequested)
+	if (b_RequestTextureReset)
 	{
-		b_FontChangeRequested = false;
+		b_RequestTextureReset = false;
+
+		ResetTexture();
+	}
+
+	if (b_RequestFontChange)
+	{
+		b_RequestFontChange = false;
 
 		ImGuiIO& io = ImGui::GetIO();
 		io.Fonts->Clear();
@@ -82,13 +89,6 @@ void Global_Application::Draw(void)
 
 		ImGui_ImplDX9_InvalidateDeviceObjects();
 		ImGui_ImplDX9_CreateDeviceObjects();
-	}
-
-	if (b_ResetTextureRequested)
-	{
-		b_ResetTextureRequested = false;
-
-		ResetTexture();
 	}
 
 	ImGui_ImplDX9_NewFrame();
@@ -299,7 +299,7 @@ int Global_Application::Main(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWST
 		{
 			SaveConfig();
 
-			std::filesystem::path Source = Str.FormatCStyle(L"%s\\%s", Window->GetCurrentWorkingDir().c_str(), L"icons.png");
+			std::filesystem::path Source = Str.FormatCStyle(L"%ws\\%ws", Window->GetCurrentWorkingDir().wstring().c_str(), L"icons.png");
 
 			if (FS.Exists(Source) && !FS.Exists(GetToolbarIconFilename()))
 			{
@@ -419,7 +419,7 @@ int Global_Application::Main(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWST
 		Window->SetTimer(60);
 	}
 	{
-		std::filesystem::path Filename = Str.FormatCStyle(L"%s\\%s", Window->GetCurrentWorkingDir().c_str(), L"icons.png");
+		std::filesystem::path Filename = Str.FormatCStyle(L"%ws\\%ws", Window->GetCurrentWorkingDir().wstring().c_str(), L"icons.png");
 
 		D3DXIMAGE_INFO ImageInfo{};
 

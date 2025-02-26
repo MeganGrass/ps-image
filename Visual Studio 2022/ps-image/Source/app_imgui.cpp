@@ -61,14 +61,18 @@ void Global_Application::MainMenu(void)
 				{
 					TextureIO(ImageIO::SaveMultiNew | ImageIO::All, NULL, m_Palette, ImageType::PAL);
 				}
+#ifdef LIB_PNG
 				if (ImGui::MenuItem("PNG##FileMenuSaveAs"))
 				{
 					TextureIO(ImageIO::SaveMultiNew | ImageIO::All, NULL, m_Palette, ImageType::PNG);
 				}
+#endif
+#ifdef LIB_JPG
 				if (ImGui::MenuItem("JPG##FileMenuSaveAs"))
 				{
 					TextureIO(ImageIO::SaveMultiNew | ImageIO::All, NULL, m_Palette, ImageType::JPG);
 				}
+#endif
 				ImGui::EndMenu();
 			}
 			ImGui::Separator();
@@ -336,7 +340,7 @@ void Global_Application::Options(void)
 
 			if (ImGui::Selectable(Window->FontList()[i].filename().stem().string().c_str(), b_IsSelected))
 			{
-				b_FontChangeRequested = true;
+				b_RequestFontChange = true;
 				Window->SetFont(Window->FontList()[Window->GetFontIndex() = i], Window->FontSize());
 			}
 
@@ -372,7 +376,7 @@ void Global_Application::Options(void)
 
 		if (OldFontSize != Window->FontSize())
 		{
-			b_FontChangeRequested = true;
+			b_RequestFontChange = true;
 		}
 	}
 
@@ -797,7 +801,7 @@ void Global_Application::Palette(void)
 			{
 				Texture().GetPalette().at(pPalette + i) = Color1;
 
-				ResetTexture();
+				b_RequestTextureReset = true;
 			}
 		}
 	}
@@ -894,7 +898,7 @@ void Global_Application::ImageSettings(void)
 		{
 			if (ImGui::Checkbox("Transparency##UtilityWindow", &Texture().TransparencyExternal()))
 			{
-				ResetTexture();
+				b_RequestTextureReset = true;
 			}
 			Tooltip("External color is semi/fully transparent");
 		}
@@ -923,7 +927,7 @@ void Global_Application::ImageSettings(void)
 				{
 					Texture().TransparencyColor() = (0x00 << 24) | (Texture().GetBlue(Color1) << 16) | (Texture().GetGreen(Color1) << 8) | Texture().GetRed(Color1);
 
-					ResetTexture();
+					b_RequestTextureReset = true;
 				}
 			}
 			else
@@ -951,7 +955,7 @@ void Global_Application::ImageSettings(void)
 				{
 					Texture().TransparencyColor() = (NewAlpha << 24) | (NewBlue << 16) | (NewGreen << 8) | NewRed;
 
-					ResetTexture();
+					b_RequestTextureReset = true;
 				}
 			}
 		}
@@ -961,7 +965,7 @@ void Global_Application::ImageSettings(void)
 		{
 			if (ImGui::Checkbox("Superblack##UtilityWindow", &Texture().TransparencySuperblack()))
 			{
-				ResetTexture();
+				b_RequestTextureReset = true;
 			}
 			if (Texture().GetDepth() == 24)
 			{
@@ -982,7 +986,7 @@ void Global_Application::ImageSettings(void)
 		{
 			if (ImGui::Checkbox("Superimposed##UtilityWindow", &Texture().TransparencySuperimposed()))
 			{
-				ResetTexture();
+				b_RequestTextureReset = true;
 			}
 			Tooltip("Color at palette index 0 is semi/fully transparent");
 		}
@@ -992,7 +996,7 @@ void Global_Application::ImageSettings(void)
 		{
 			if (ImGui::Checkbox("STP Only##UtilityWindow", &Texture().TransparencySTP()))
 			{
-				ResetTexture();
+				b_RequestTextureReset = true;
 			}
 			Tooltip("STP flag determines if Transparency is used\r\n\r\n4bpp, 8bpp and 16bpp only");
 		}
@@ -1007,7 +1011,7 @@ void Global_Application::ImageSettings(void)
 				Texture().TransparencyInverse() = false;
 				Texture().TransparencyQuarter() = false;
 
-				ResetTexture();
+				b_RequestTextureReset = true;
 			}
 			TooltipOnHover("100/back + 100/texture");
 
@@ -1020,7 +1024,7 @@ void Global_Application::ImageSettings(void)
 				Texture().TransparencyInverse() = false;
 				Texture().TransparencyQuarter() = true;
 
-				ResetTexture();
+				b_RequestTextureReset = true;
 			}
 			TooltipOnHover("100/back + 25/texture");
 
@@ -1033,7 +1037,7 @@ void Global_Application::ImageSettings(void)
 				Texture().TransparencyInverse() = false;
 				Texture().TransparencyQuarter() = false;
 
-				ResetTexture();
+				b_RequestTextureReset = true;
 			}
 			TooltipOnHover("50/back + 50/texture");
 
@@ -1046,7 +1050,7 @@ void Global_Application::ImageSettings(void)
 				Texture().TransparencyInverse() = true;
 				Texture().TransparencyQuarter() = false;
 
-				ResetTexture();
+				b_RequestTextureReset = true;
 			}
 			TooltipOnHover("100/back - 100/texture");
 		}
@@ -1249,9 +1253,20 @@ void Global_Application::CreateModal(void)
 		bool b_PixelsTIM = (std::to_underlying(m_CreateInfo.PixelType) & (std::to_underlying(ImageType::TIM)));
 		bool b_PixelsPXL = (std::to_underlying(m_CreateInfo.PixelType) & (std::to_underlying(ImageType::PXL)));
 		bool b_PixelsBMP = (std::to_underlying(m_CreateInfo.PixelType) & (std::to_underlying(ImageType::BMP)));
+#ifdef LIB_PNG
 		bool b_PixelsPNG = (std::to_underlying(m_CreateInfo.PixelType) & (std::to_underlying(ImageType::PNG)));
+#endif
+#ifdef LIB_JPG
 		bool b_PixelsJPG = (std::to_underlying(m_CreateInfo.PixelType) & (std::to_underlying(ImageType::JPG)));
-		bool b_PixelsNone = (b_PixelsRaw || b_PixelsTIM || b_PixelsPXL || b_PixelsBMP || b_PixelsPNG || b_PixelsJPG) ? false : true;
+#endif
+		bool b_PixelsNone = (b_PixelsRaw || b_PixelsTIM || b_PixelsPXL || b_PixelsBMP
+#ifdef LIB_PNG
+			|| b_PixelsPNG
+#endif
+#ifdef LIB_JPG
+			|| b_PixelsJPG
+#endif
+			) ? false : true;
 
 		{
 			ImGui::BeginDisabled(!b_PixelsNone && !b_PixelsRaw);
@@ -1342,7 +1357,14 @@ void Global_Application::CreateModal(void)
 			}
 
 			{
-				uint32_t iFileType = b_PixelsNone ? 0 : b_PixelsRaw ? 1 : b_PixelsTIM ? 2 : b_PixelsPXL ? 3 : b_PixelsBMP ? 4 : b_PixelsPNG ? 5 : b_PixelsJPG ? 6 : 0;
+				uint32_t iFileType = b_PixelsNone ? 0 : b_PixelsRaw ? 1 : b_PixelsTIM ? 2 : b_PixelsPXL ? 3 : b_PixelsBMP ? 4
+#ifdef LIB_PNG
+					: b_PixelsPNG ? 5
+#endif
+#ifdef LIB_JPG
+					: b_PixelsJPG ? 6
+#endif
+					: 0;
 
 				ImGui::SetNextItemWidth(ItemWidth);
 
@@ -1374,12 +1396,16 @@ void Global_Application::CreateModal(void)
 							case 4:
 								m_CreateInfo.PixelType = ImageType::BMP;
 								break;
+#ifdef LIB_PNG
 							case 5:
 								m_CreateInfo.PixelType = ImageType::PNG;
 								break;
+#endif
+#ifdef LIB_JPG
 							case 6:
 								m_CreateInfo.PixelType = ImageType::JPG;
 								break;
+#endif
 							}
 						}
 						if (b_IsSelected)
