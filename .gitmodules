@@ -13,3 +13,6 @@
 [submodule "sdk/libpng"]
 	path = sdk/libpng
 	url = https://github.com/pnggroup/libpng
+[submodule "sdk/zlib"]
+	path = sdk/zlib
+	url = https://github.com/madler/zlib
