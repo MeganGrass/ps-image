@@ -135,6 +135,8 @@ git clone https://github.com/MeganGrass/ps-image.git
 
 [CLT and PXL file](https://problemkaputt.de/psxspx-cdrom-file-video-texture-image-tim-pxl-clt-sony.htm)
 
+[PS2 TIM2 Palette De-Swizzle](https://github.com/bartlomiejduda/ReverseBox/blob/main/reversebox/image/swizzling/swizzle_ps2.py)
+
 [PSX.dev (Discord)](https://discord.com/invite/psx-dev-642647820683444236)
 
 
