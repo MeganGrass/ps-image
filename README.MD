@@ -1,14 +1,15 @@
 # PS-Image
-Multi-purpose utility application for Sony PlayStation (PS1/PSone) textures and images
+Multi-purpose utility application for Sony PlayStation (PS1/PSone) textures
 
 ## Supported File Formats
-- Sony PlayStation Texture Image (.TIM) *(4bpp, 8bpp, 16bpp and 24bpp)*
-- Sony PlayStation Texture CLUT (.CLT) *(16bpp colors)*
-- Sony PlayStation Texture Pixels (.PXL) *(4bpp, 8bpp, 16bpp and 24bpp)*
+- Sony PlayStation Texture Image (.TIM) *(4/8/16/24bpp)*
+- Sony PlayStation Texture CLUT (.CLT) *(16bpp color palette)*
+- Sony PlayStation Texture Pixels (.PXL) *(4/8/16/24bpp pixels)*
 - Sony PlayStation Bitstream (.BS) *(Version 1/2)*
-- Bitmap Graphic (.BMP) *(4bpp/8bpp palette, 16-bit high color and 24bpp/32bpp A/RGB)*
+- Sony PlayStation 2 Texture Map (.TM2/*.CL2) *(16/24/32bpp palette Storage Mode 1/2, 4/8/16/24/32bpp pixels)*
+- Bitmap Graphic (.BMP) *(4/8bpp palette, 16-bit high color and 24/32bpp A/RGB)*
 - Microsoft RIFF Palette (.PAL) *(32bpp ARGB palette)*
-- Portable Network Graphics (.PNG) *(4bpp/8bpp palette and 24bpp/32bpp A/RGB)*
+- Portable Network Graphics (.PNG) *(4/8bpp palette and 24/32bpp A/RGB)*
 - Joint Photographic Experts Group (.JPG)
 
 ## Accessibility Features
@@ -68,7 +69,7 @@ Multi-purpose utility application for Sony PlayStation (PS1/PSone) textures and 
 - 4bpp *(16 color palette)* and 8bpp *(256 color palette)* modes supported
 
 ##### **Pixels**
-- Enable or disable semi-transparency (STP flag) for individual palette colors and pixels (4bpp, 8bpp and 16bpp only)
+- Enable or disable semi-transparency (STP flag) for individual palette colors and pixels (4bpp/8bpp/16bpp only)
 
 ## Bitstream Images
 Support for Bitstream images is extremely limited, with only decoding support being reserved for future features
