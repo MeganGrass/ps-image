@@ -9,18 +9,6 @@
 
 std::unique_ptr<Global_Application> G = std::make_unique<Global_Application>();
 
-std::function<void()> CreateModalFunc = []() {};
-
-std::function<void()> SearchModalFunc = []() {};
-
-std::function<void(float, bool&)> SearchModalCb = [](float, bool&) {};
-
-std::function<void()> SaveAllFunc = []() {};
-
-static String ImGuiIniFilename = "";
-
-static ImGuiContext* Context = nullptr;
-
 void Global_Application::About(void) const
 {
 	Standard_String Str;
@@ -226,7 +214,8 @@ void Global_Application::Shutdown(void)
 		do { std::this_thread::sleep_for(std::chrono::milliseconds(10)); } while (b_Searching);
 	}
 
-	if (ToolbarIcons) { ToolbarIcons->Release(); ToolbarIcons = nullptr; }
+	b_ToolbarIconsOnBoot = false;
+	m_ToolbarIcons.reset();
 
 	Render->Shutdown();
 
@@ -239,7 +228,7 @@ void Global_Application::Shutdown(void)
 	//ImGui_ImplDX9_Shutdown();
 	//ImGui_ImplWin32_Shutdown();
 
-	//ImGui::DestroyContext(Context);
+	//ImGui::DestroyContext(Context.get());
 
 	//std::this_thread::sleep_for(std::chrono::milliseconds(10));
 
@@ -250,6 +239,8 @@ void Global_Application::Shutdown(void)
 
 void Global_Application::DragAndDrop(StrVecW Files)
 {
+	Window->ClearDroppedFiles();
+
 	/*for (std::size_t i = 0; i < Files.size(); i++)
 	{
 		StringW FileExtension = FS.GetFileExtension(Files[i]).wstring();
@@ -263,8 +254,6 @@ void Global_Application::DragAndDrop(StrVecW Files)
 	}*/
 
 	if (!Files.empty()) { TextureIO(Files[0], ImageIO::All); }
-
-	Window->ClearDroppedFiles();
 }
 
 void Global_Application::Commandline(StrVecW Args)
@@ -312,10 +301,10 @@ int Global_Application::Main(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWST
 		Commandline(Window->GetCommandline(lpCmdLine));
 	}
 	{
-		ImGuiIniFilename = GetImGuiConfigFilename().string();
+		m_ConfigStr = GetImGuiConfigFilename().string();
 
 		IMGUI_CHECKVERSION();
-		Context = ImGui::CreateContext();
+		Context.reset(ImGui::CreateContext());
 		ImGui::StyleColorsDark();
 
 		{
@@ -347,7 +336,7 @@ int Global_Application::Main(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWST
 		}
 
 		ImGuiIO& io = ImGui::GetIO();
-		io.IniFilename = ImGuiIniFilename.c_str();
+		io.IniFilename = m_ConfigStr.c_str();
 		//io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
 		io.Fonts->Clear();
 		io.Fonts->AddFontFromFileTTF(Window->GetFont().string().c_str(), Window->FontSize());
@@ -423,6 +412,8 @@ int Global_Application::Main(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWST
 
 		D3DXIMAGE_INFO ImageInfo{};
 
+		IDirect3DTexture9* ToolbarIcons = nullptr;
+
 		if (FS.Exists(GetToolbarIconFilename()))
 		{
 			if (!FAILED(D3DXCreateTextureFromFileExW(Render->Device(),
@@ -436,6 +427,7 @@ int Global_Application::Main(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWST
 				D3DX_DEFAULT,
 				D3DCOLOR_XRGB(255, 255, 255), &ImageInfo, NULL, &ToolbarIcons)))
 			{
+				m_ToolbarIcons.reset(ToolbarIcons);
 				b_ToolbarIconsOnBoot = true;
 			}
 		}
@@ -452,6 +444,7 @@ int Global_Application::Main(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWST
 				D3DX_DEFAULT,
 				D3DCOLOR_XRGB(255, 255, 255), &ImageInfo, NULL, &ToolbarIcons)))
 			{
+				m_ToolbarIcons.reset(ToolbarIcons);
 				b_ToolbarIconsOnBoot = true;
 			}
 		}

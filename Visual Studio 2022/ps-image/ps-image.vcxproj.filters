@@ -241,6 +241,12 @@
     <ClCompile Include="..\..\sdk\zlib\zutil.c">
       <Filter>SDK\zlib</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\sony-lib\sony_texture_2.cpp">
+      <Filter>Sony</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\sony-lib\sony_texture_2_str.cpp">
+      <Filter>Sony</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Windows\resource.h">
@@ -386,6 +392,9 @@
     </ClInclude>
     <ClInclude Include="..\..\sdk\zlib\zlib.h">
       <Filter>SDK\zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\sony-lib\sony_texture_2.h">
+      <Filter>Sony</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

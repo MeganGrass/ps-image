@@ -25,13 +25,6 @@ typedef class Global_Application Global;
 
 extern std::unique_ptr<Global_Application> G;
 
-extern std::function<void()> CreateModalFunc;
-
-extern std::function<void()> SearchModalFunc;
-extern std::function<void(float, bool&)> SearchModalCb;
-
-extern std::function<void()> SaveAllFunc;
-
 extern LRESULT CALLBACK WindowProc(HWND, UINT, WPARAM, LPARAM);
 extern LRESULT CALLBACK RenderProc(HWND, UINT, WPARAM, LPARAM);
 
@@ -42,10 +35,19 @@ private:
 
 	Standard_FileSystem FS;
 
-	std::unique_ptr<Sony_PlayStation_Texture> m_Texture;
+	String m_ConfigStr;
 
-	IDirect3DTexture9* ToolbarIcons;
-	IDirect3DTexture9* DXTexture;
+	std::function<void()> CreateModalFunc;
+
+	std::function<void()> SearchModalFunc;
+	std::function<void(float, bool&)> SearchModalCb;
+
+	std::function<void()> SaveAllFunc;
+
+	std::unique_ptr<ImGuiContext, decltype(&ImGui::DestroyContext)> Context;
+
+	std::unique_ptr<IDirect3DTexture9, IDirect3DTexture9Delete> m_DXTexture;
+	std::unique_ptr<IDirect3DTexture9, IDirect3DTexture9Delete> m_ToolbarIcons;
 	D3DSURFACE_DESC m_TextureDesc;
 	D3DTEXTUREFILTERTYPE m_TextureFilter;
 
@@ -54,10 +56,12 @@ private:
 	std::size_t m_SelectedFile;
 	std::size_t m_PostSearchSelectedFile;
 
+	std::unique_ptr<Sony_PlayStation_Texture> m_Texture;
+
 	Sony_Texture_Create_Ex m_CreateInfo;
 
-	DWORD ClipboardColor;
-	std::vector<Sony_Texture_16bpp> ClipboardPalette;
+	std::vector<Sony_Pixel_16bpp> m_ClipboardPalette;
+	DWORD m_ClipboardColor;
 
 	std::uint16_t m_Palette;
 
@@ -73,22 +77,17 @@ private:
 	std::uint16_t m_LastKnownPaletteCount;
 	std::size_t m_LastKnownFileCount;
 
-	float m_ProgressBar;
-	bool b_Searching;
-
-	bool b_ImageOnDisk;
+	int m_BootWidth;
+	int m_BootHeight;
+	bool b_BootMaximized;
+	bool b_BootFullscreen;
+	bool b_ToolbarIconsOnBoot;
+	bool b_OpenLastFileOnBoot;
 
 	bool b_RequestTextureReset;
 	bool b_RequestFontChange;
-
-	float m_FontSizeMin;
-	float m_FontSizeMax;
-
-	float m_ImageZoomMin;
-	float m_ImageZoomMax;
-	float m_ImageZoom;
-
-	bool b_Dithering;
+	bool b_Shutdown;
+	bool b_ForceShutdown;
 
 	bool b_ViewToolbar;
 	bool b_ViewStatusbar;
@@ -99,16 +98,19 @@ private:
 	bool b_ViewImageOptions;
 	bool b_ViewVRAMWindow;
 
-	bool b_ToolbarIconsOnBoot;
-	bool b_OpenLastFileOnBoot;
+	float m_FontSizeMin;
+	float m_FontSizeMax;
 
-	int m_BootWidth;
-	int m_BootHeight;
-	bool b_BootMaximized;
-	bool b_BootFullscreen;
+	float m_ImageZoomMin;
+	float m_ImageZoomMax;
+	float m_ImageZoom;
 
-	bool b_Shutdown;
-	bool b_ForceShutdown;
+	bool b_ImageOnDisk;
+
+	float m_ProgressBar;
+	bool b_Searching;
+
+	bool b_Dithering;
 
 	[[nodiscard]] constexpr auto Texture() noexcept -> Sony_PlayStation_Texture&
 	{
@@ -190,9 +192,10 @@ public:
 		Render(std::make_unique<Standard_DirectX_9>()),
 		Str(),
 		FS(),
+		m_ConfigStr(),
 		m_Texture(nullptr),
-		ToolbarIcons(nullptr),
-		DXTexture(nullptr),
+		m_ToolbarIcons(nullptr),
+		m_DXTexture(nullptr),
 		m_TextureDesc(),
 		m_TextureFilter(D3DTEXF_NONE),
 		m_Filename(),
@@ -205,8 +208,8 @@ public:
 		b_RequestFontChange(false),
 		b_RequestTextureReset(false),
 		m_CreateInfo(),
-		ClipboardColor(0),
-		ClipboardPalette(),
+		m_ClipboardColor(0),
+		m_ClipboardPalette(),
 		m_LastKnownBitsPerPixel(16),
 		m_LastKnownWidth(1024),
 		m_LastKnownHeight(512),
@@ -238,8 +241,13 @@ public:
 		b_BootMaximized(false),
 		b_BootFullscreen(false),
 		b_Shutdown(false),
-		b_ForceShutdown(false)
+		b_ForceShutdown(false),
+		Context(nullptr, &ImGui::DestroyContext)
 	{
+		CreateModalFunc = []() {};
+		SearchModalFunc = []() {};
+		SearchModalCb = [](float, bool&) {};
+		SaveAllFunc = []() {};
 	}
 	~Global_Application(void) = default;
 

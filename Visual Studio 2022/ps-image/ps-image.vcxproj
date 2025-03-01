@@ -87,6 +87,8 @@
     <ClCompile Include="..\..\sdk\zlib\zutil.c" />
     <ClCompile Include="..\..\sony-lib\sony_bitstream.cpp" />
     <ClCompile Include="..\..\sony-lib\sony_texture.cpp" />
+    <ClCompile Include="..\..\sony-lib\sony_texture_2.cpp" />
+    <ClCompile Include="..\..\sony-lib\sony_texture_2_str.cpp" />
     <ClCompile Include="Source\app.cpp" />
     <ClCompile Include="Source\app_config.cpp" />
     <ClCompile Include="Source\app_file.cpp" />
@@ -146,6 +148,7 @@
     <ClInclude Include="..\..\sony-lib\sony_bitstream.h" />
     <ClInclude Include="..\..\sony-lib\sony_bitstream_table.h" />
     <ClInclude Include="..\..\sony-lib\sony_texture.h" />
+    <ClInclude Include="..\..\sony-lib\sony_texture_2.h" />
     <ClInclude Include="Source\app.h" />
     <ClInclude Include="Windows\resource.h" />
   </ItemGroup>
@@ -249,7 +252,7 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
-      <AdditionalIncludeDirectories>$(SolutionDir)Windows;../../mstd-lib;../../mstd-lib/Windows;../../mstd-lib/DX9;../../sony-lib;../../sdk/zlib;../../sdk/libjpeg-turbo/src;../../sdk/libpng;../../sdk/imgui;../../sdk/imgui/backends;../../sdk/imgui/misc/cpp;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Windows;../../mstd-lib;../../mstd-lib/Windows;../../mstd-lib/DX9;../../sony-lib;../../sdk/zlib;../../sdk/libjpeg-turbo/src;../../sdk/libjpeg-turbo/build;../../sdk/libpng;../../sdk/imgui;../../sdk/imgui/backends;../../sdk/imgui/misc/cpp;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -257,7 +260,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>
       </AdditionalDependencies>
-      <AdditionalLibraryDirectories>../../sdk/libjpeg-turbo/bin/Debug/x86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>../../sdk/libjpeg-turbo/build/$(Platform)/$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <Manifest>
       <AdditionalManifestFiles>".\\Windows\\manifest.xml" %(AdditionalManifestFiles)</AdditionalManifestFiles>
@@ -285,7 +288,7 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
-      <AdditionalIncludeDirectories>$(SolutionDir)Windows;../../mstd-lib;../../mstd-lib/Windows;../../mstd-lib/DX9;../../sony-lib;../../sdk/zlib;../../sdk/libjpeg-turbo/src;../../sdk/libpng;../../sdk/imgui;../../sdk/imgui/backends;../../sdk/imgui/misc/cpp;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Windows;../../mstd-lib;../../mstd-lib/Windows;../../mstd-lib/DX9;../../sony-lib;../../sdk/zlib;../../sdk/libjpeg-turbo/src;../../sdk/libjpeg-turbo/build;../../sdk/libpng;../../sdk/imgui;../../sdk/imgui/backends;../../sdk/imgui/misc/cpp;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -295,7 +298,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>
       </AdditionalDependencies>
-      <AdditionalLibraryDirectories>../../sdk/libjpeg-turbo/bin/Release/x86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>../../sdk/libjpeg-turbo/build/$(Platform)/$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <Manifest>
       <AdditionalManifestFiles>".\\Windows\\manifest.xml" %(AdditionalManifestFiles)</AdditionalManifestFiles>
@@ -309,11 +312,11 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;MSTD_DEVICE;MSTD_DX9;LIB_JPEG;LIB_PNG;IMGUI_IMPL_WIN32_DISABLE_GAMEPAD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;MSTD_DEVICE;MSTD_DX9;LIB_PNG;LIB_JPEG;IMGUI_IMPL_WIN32_DISABLE_GAMEPAD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
-      <AdditionalIncludeDirectories>$(SolutionDir)Windows;../../mstd-lib;../../mstd-lib/Windows;../../mstd-lib/DX9;../../sony-lib;../../sdk/zlib;../../sdk/libjpeg-turbo/src;../../sdk/libpng;../../sdk/imgui;../../sdk/imgui/backends;../../sdk/imgui/misc/cpp;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Windows;../../mstd-lib;../../mstd-lib/Windows;../../mstd-lib/DX9;../../sony-lib;../../sdk/zlib;../../sdk/libjpeg-turbo/src;../../sdk/libjpeg-turbo/build;../../sdk/libpng;../../sdk/imgui;../../sdk/imgui/backends;../../sdk/imgui/misc/cpp;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -321,7 +324,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>
       </AdditionalDependencies>
-      <AdditionalLibraryDirectories>../../sdk/libjpeg-turbo/bin/Debug/x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>../../sdk/libjpeg-turbo/build/$(Platform)/$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <Manifest>
       <AdditionalManifestFiles>".\\Windows\\manifest.xml" %(AdditionalManifestFiles)</AdditionalManifestFiles>
@@ -345,7 +348,7 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
-      <AdditionalIncludeDirectories>$(SolutionDir)Windows;../../mstd-lib;../../mstd-lib/Windows;../../mstd-lib/DX9;../../sony-lib;../../sdk/zlib;../../sdk/libjpeg-turbo/src;../../sdk/libpng;../../sdk/imgui;../../sdk/imgui/backends;../../sdk/imgui/misc/cpp;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Windows;../../mstd-lib;../../mstd-lib/Windows;../../mstd-lib/DX9;../../sony-lib;../../sdk/zlib;../../sdk/libjpeg-turbo/src;../../sdk/libjpeg-turbo/build;../../sdk/libpng;../../sdk/imgui;../../sdk/imgui/backends;../../sdk/imgui/misc/cpp;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -355,7 +358,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>
       </AdditionalDependencies>
-      <AdditionalLibraryDirectories>../../sdk/libjpeg-turbo/bin/Release/x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>../../sdk/libjpeg-turbo/build/$(Platform)/$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <Manifest>
       <AdditionalManifestFiles>".\\Windows\\manifest.xml" %(AdditionalManifestFiles)</AdditionalManifestFiles>

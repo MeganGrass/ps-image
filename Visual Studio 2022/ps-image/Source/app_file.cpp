@@ -13,7 +13,7 @@ void Global_Application::Close(void)
 
 	if (m_Texture) { m_Texture.reset(); m_Texture = nullptr; }
 
-	if (Render->NormalState() && DXTexture) { DXTexture->Release(); DXTexture = nullptr; }
+	if (Render->NormalState() && m_DXTexture) { m_DXTexture.reset(); }
 
 	m_Palette = 0;
 
@@ -57,11 +57,9 @@ void Global_Application::ResetTexture(void)
 
 		if (Render->NormalState())
 		{
-			if (DXTexture) { DXTexture->Release(); }
+			m_DXTexture.reset(Render->CreateTexture(m_Texture, m_Palette, Texture().TransparencyFlags(), Texture().TransparencyColor()));
 
-			DXTexture = Render->CreateTexture(m_Texture, m_Palette, Texture().TransparencyFlags(), Texture().TransparencyColor());
-
-			DXTexture->GetLevelDesc(0, &m_TextureDesc);
+			m_DXTexture->GetLevelDesc(0, &m_TextureDesc);
 		}
 	}
 	else { Close(); }
@@ -106,7 +104,7 @@ void Global_Application::Search(std::filesystem::path Filename)
 			This->m_ProgressBar = 0.0f;
 			This->b_Searching = true;
 
-			SearchModalCb = [&](float Progress, bool& b_Status) -> void
+			This->SearchModalCb = [&](float Progress, bool& b_Status) -> void
 				{
 					This->m_ProgressBar = Progress;
 					b_Status = This->b_Searching;
@@ -122,7 +120,7 @@ void Global_Application::Search(std::filesystem::path Filename)
 
 			External->Str.hWnd = This->Window->Get();
 
-			External->Search(Filename, 0, SearchModalCb, OnSearchCompleteCb);
+			External->Search(Filename, 0, This->SearchModalCb, OnSearchCompleteCb);
 		});
 
 	SearchModalFunc = [This]() -> void { This->SearchModal(); };
@@ -190,13 +188,13 @@ void Global_Application::MovePalette(std::uint16_t iPalette, bool Right)
 void Global_Application::CopyPalette(void)
 {
 	if (!m_Texture) { return; }
-	Texture().CopyPalette(ClipboardPalette, m_Palette);
+	Texture().CopyPalette(m_ClipboardPalette, m_Palette);
 }
 
 void Global_Application::PastePalette(void)
 {
-	if (!m_Texture || ClipboardPalette.empty()) { return; }
-	if (Texture().PastePalette(ClipboardPalette, m_Palette)) { b_RequestTextureReset = true; }
+	if (!m_Texture || m_ClipboardPalette.empty()) { return; }
+	if (Texture().PastePalette(m_ClipboardPalette, m_Palette)) { b_RequestTextureReset = true; }
 }
 
 void Global_Application::AddPalette(void)
@@ -378,6 +376,7 @@ void Global_Application::TextureIO(std::filesystem::path Filename, ImageIO Flags
 #endif
 
 	bool b_KnownFileExt = false;
+	!b_KnownFileExt ? b_KnownFileExt = (m_FileExt == L".TM2") ? true : false : false;
 	!b_KnownFileExt ? b_KnownFileExt = (m_FileExt == L".TIM") ? true : false : false;
 	!b_KnownFileExt ? b_KnownFileExt = (m_FileExt == L".CLT") ? true : false : false;
 	!b_KnownFileExt ? b_KnownFileExt = (m_FileExt == L".PXL") ? true : false : false;
@@ -390,6 +389,8 @@ void Global_Application::TextureIO(std::filesystem::path Filename, ImageIO Flags
 	bool b_DefaultFileType = (m_FileExt == L".TIM");
 
 	if ((!b_KnownFileExt || b_DefaultFileType) && !b_Import && !b_Write && !b_SaveAs && !b_SaveAll) { m_PostSearchSelectedFile = 0; Search(Filename); return; }
+
+	if ((m_FileExt == L".TM2") && b_SaveAs) { Str.Message(L"I/O Error: TIM2 output is not yet supported"); return; }
 
 	if (b_SaveAll)
 	{
@@ -444,7 +445,7 @@ void Global_Application::TextureIO(std::filesystem::path Filename, ImageIO Flags
 #ifdef LIB_JPEG
 					if (std::to_underlying(SaveAllType) & std::to_underlying(ImageType::JPG))
 					{
-						std::make_unique<Sony_PlayStation_Texture>(This->m_Filename, (size_t)This->File()[iCnt].first)->SaveJPG(
+						std::make_unique<Sony_PlayStation_Texture>(This->m_Filename, (size_t)This->File()[iCnt].first)->SaveJPEG(
 							Directory / This->Str.FormatCStyle(L"%ws_%04d_0x%08llx.jpg", This->m_Filename.stem().wstring().c_str(), iCnt, This->File()[iCnt].first), NULL, iPalette, b_Truncate);
 					}
 #endif
@@ -493,7 +494,7 @@ void Global_Application::TextureIO(std::filesystem::path Filename, ImageIO Flags
 			if (m_FileExt == L".PNG" && !External->SavePNG(Filename, pSource, iPalette, b_Truncate)) { return; }
 #endif
 #ifdef LIB_JPEG
-			if ((m_FileExt == L".JPG" || m_FileExt == L".JPEG") && !External->SaveJPG(Filename, pSource, iPalette, b_Truncate)) { return; }
+			if ((m_FileExt == L".JPG" || m_FileExt == L".JPEG") && !External->SaveJPEG(Filename, pSource, iPalette, b_Truncate)) { return; }
 #endif
 
 			if (b_OpenOnComplete)
@@ -517,6 +518,7 @@ void Global_Application::TextureIO(std::filesystem::path Filename, ImageIO Flags
 
 	External->Str.hWnd = Window->Get();
 
+	if (m_FileExt == L".TM2" && !External->OpenTIM2(Filename, pSource, b_Palette, b_Pixel)) { return; }
 	if (m_FileExt == L".TIM" && !External->OpenTIM(Filename, pSource, b_Palette, b_Pixel)) { return; }
 	if (m_FileExt == L".CLT" && !External->OpenCLT(Filename, pSource)) { return; }
 	if (m_FileExt == L".PXL" && !External->OpenPXL(Filename, pSource)) { return; }
@@ -527,7 +529,7 @@ void Global_Application::TextureIO(std::filesystem::path Filename, ImageIO Flags
 	if (m_FileExt == L".PNG" && !External->OpenPNG(Filename, pSource)) { return; }
 #endif
 #ifdef LIB_JPEG
-	if ((m_FileExt == L".JPG" || m_FileExt == L".JPEG") && !External->OpenJPG(Filename, pSource)) { return; }
+	if ((m_FileExt == L".JPG" || m_FileExt == L".JPEG") && !External->OpenJPEG(Filename, pSource)) { return; }
 #endif
 
 	if (!b_Palette) { External->DeletePalette(NULL, true); }
@@ -581,7 +583,7 @@ void Global_Application::TextureIO(std::filesystem::path Filename, ImageIO Flags
 			return;
 		}
 
-		std::vector<Sony_Texture_16bpp> Palette = Texture().ConvertPalette(External->GetPalette(), External->GetPaletteColorMax(), Texture().GetPaletteColorMax());
+		std::vector<Sony_Pixel_16bpp> Palette = Texture().ConvertPalette(External->GetPalette(), External->GetPaletteColorMax(), Texture().GetPaletteColorMax());
 
 		if (b_PaletteAdd)
 		{
@@ -688,9 +690,9 @@ void Global_Application::TextureIO(ImageIO Flags, std::uintmax_t pSource, std::u
 	{
 		if (auto Filename = Window->GetOpenFilename(
 			{ L"All files",
-			  L"Sony Texture Image", L"Sony Texture CLUT", L"Sony Texture Pixels", L"Sony Bitstream",
+			  L"Sony Texture Image", L"Sony Texture CLUT", L"Sony Texture Pixels", L"Sony Bitstream", L"Sony Texture Image 2",
 			  L"Bitmap Graphic", L"Microsoft RIFF Palette", L"Portable Network Graphics", L"Joint Photographic Experts Group" },
-			{ L"*.*", L"*.tim", L"*.clt", L"*.pxl", L"*.bs", L"*.bmp", L"*.pal", L"*.png", L"*.jpg;*.jpeg" }
+			{ L"*.*", L"*.tim", L"*.clt", L"*.pxl", L"*.bs", L"*.tm2", L"*.bmp", L"*.pal", L"*.png", L"*.jpg;*.jpeg" }
 		); Filename.has_value())
 		{ TextureIO(Filename.value(), Flags, pSource, iPalette, SaveAllType); }
 	}
