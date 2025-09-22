@@ -107,6 +107,9 @@ Preview is not available
 ![Image scaled to 64x, Dithering On, Superblack pixels fully transparent, mouse cursor hovering pixel (21, 6)](/images/ps-image_02.jpg?raw=true "Image scaled to 64x, Dithering On, Superblack pixels fully transparent, mouse cursor hovering pixel (21, 6)")
 ![Open RAW data prompt](/images/ps-image_03.jpg?raw=true "Open RAW data prompt")
 
+## Future Support Preview
+![PCSX-Redux VRAM Link](/images/ps-image_04.jpg?raw=true "PCSX-Redux VRAM Link")
+
 ## TODO
 - General code cleanup, optimization, commenting, etc.
 - Pixel editor
